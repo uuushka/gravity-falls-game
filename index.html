@@ -1,250 +1,396 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#0b1723"><title>Gravity Falls — Тайна пятой страницы</title><style>@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
-:root{--ink:#090f19;--cream:#fff5df;--gold:#f5bf70;--muted:#bbcad4;--pink:#f6a9b9}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none}
-body{font-family:Manrope,'DM Sans',-apple-system,system-ui,sans-serif;color:var(--cream);background:#0b1723;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;-webkit-tap-highlight-color:transparent;cursor:pointer}
-#app,#stage{position:fixed;inset:0;width:100%;height:100%;height:100dvh;overflow:hidden}
-#stage{isolation:isolate;background:radial-gradient(ellipse at 30% 30%,#304b52,#132637 65%,#0a1520)}
-#stage::after{position:absolute;inset:0;content:"";z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,#06101e80 100%)}
-canvas{display:block;width:100%;height:100%;touch-action:none}
-.topbar{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;align-items:center;gap:12px;padding:calc(13px + env(safe-area-inset-top)) calc(18px + env(safe-area-inset-right)) 12px calc(18px + env(safe-area-inset-left));background:linear-gradient(180deg,#0a1225e8, #0a12259c 60%,transparent);pointer-events:none}
-.topbar>*{pointer-events:auto}.brand{flex:0 0 auto;letter-spacing:.18em;font-size:13px;line-height:1.15;font-weight:800;color:#fbf4e2;text-shadow:0 2px 10px #000a}.brand small{display:block;margin-top:4px;font-size:9px;letter-spacing:.22em;color:#f2c384}.brand b{font-weight:800;color:var(--gold)}
-.header-spacer{flex:1}.hud{display:flex;align-items:center;gap:11px;background:#102134ad;border:1px solid #ffffff2b;border-radius:18px;padding:8px 13px;box-shadow:0 8px 40px #0004;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);white-space:nowrap}
-#levelLabel{font-weight:800;color:var(--gold);font-size:11px;letter-spacing:.06em}.hud-sep{width:1px;height:15px;background:#ffffff30}#hearts{color:#ff9aaf;font-size:15px;letter-spacing:.04em}#clock{font-variant-numeric:tabular-nums;color:#b0c5d4;font-size:11px;font-weight:700}
-.icon-btn{height:41px;min-width:41px;border-radius:15px;border:1px solid #ffffff33;background:#122639bd;color:#fff5df;display:grid;place-items:center;font-size:17px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 25px #0003}
-.quest-panel{position:absolute;top:calc(78px + env(safe-area-inset-top));left:calc(18px + env(safe-area-inset-left));z-index:5;pointer-events:none;background:#0b1829a8;border:1px solid #ffffff21;box-shadow:0 7px 30px #0003;border-radius:14px;padding:10px 13px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.quest-head{font-size:9px;color:var(--gold);letter-spacing:.16em;font-weight:800;text-transform:uppercase;margin-bottom:4px}#quest{font-size:12px;color:#fdf0d7;font-weight:700;line-height:1.15}
-.hero-chip{position:absolute;right:calc(18px + env(safe-area-inset-right));top:calc(77px + env(safe-area-inset-top));z-index:5;display:flex;align-items:center;gap:9px;border:1px solid #ffffff2b;background:#0b1a2cc7;padding:5px 12px 5px 5px;border-radius:50px;box-shadow:0 8px 24px #0004;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);pointer-events:none}
-.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(145deg,#31546b,#14283b);overflow:hidden;display:grid;place-items:center;flex-shrink:0}.avatar img{height:49px;max-width:36px;object-fit:contain;object-position:center top;margin-top:4px}.hero-meta{line-height:1.05}.hero-meta strong{font-size:11px;color:#fff6e5}.hero-meta small{display:block;font-size:9px;margin-top:4px;color:#b5c6d2}
-.controlrow{position:absolute;z-index:4;bottom:12px;left:50%;transform:translateX(-50%);max-width:94%;display:flex;gap:18px;white-space:nowrap;font-size:11px;color:#dfebf2b6;background:#091524b3;border:1px solid #ffffff15;border-radius:14px;padding:10px 16px;backdrop-filter:blur(10px)}.controlrow strong{color:#fff2d4}
-.mobile{display:none;position:absolute;left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom));z-index:6;justify-content:space-between;align-items:end;gap:8px;padding:0 calc(13px + env(safe-area-inset-right)) 0 calc(13px + env(safe-area-inset-left));pointer-events:none;user-select:none;-webkit-user-select:none;touch-action:none}
-.mobile>*{pointer-events:auto}.dpad{display:grid;grid-template-columns:repeat(3,var(--dsize));grid-template-rows:repeat(3,var(--dsize));gap:2px;--dsize:52px;filter:drop-shadow(0 4px 15px #0008)}.ctrl{touch-action:none;border:1px solid #e3effd45;background:#10283eaf;color:#fff0d8;font-size:19px;font-weight:800;display:grid;place-items:center;backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);border-radius:17px;box-shadow:inset 0 1px 1px #ffffff24,0 4px 15px #0004}.ctrl.active,.ctrl:active{background:#f2bd68a8;border-color:#ffdfadbf;transform:scale(.95)}.dpad .up{grid-column:2;grid-row:1}.dpad .left{grid-column:1;grid-row:2}.dpad .down{grid-column:2;grid-row:3}.dpad .right{grid-column:3;grid-row:2}.dpad .center{grid-column:2;grid-row:2;border-radius:50%;background:#e4c69d22;border:1px solid #ffe3ac23;pointer-events:none}.actionpad{display:grid;grid-template-columns:repeat(2,var(--asize));grid-template-rows:repeat(2,var(--asize));gap:10px;--asize:70px;filter:drop-shadow(0 4px 15px #0008)}.actionpad .ctrl{border-radius:24px;font-size:12px;line-height:1.1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-weight:800}.actionpad .ctrl span:first-child{font-size:23px}.actionpad .ability{background:#c483916b;border-color:#f4c0c672}.actionpad .switch{background:#5b878a77;border-color:#a5d4cb65}.actionpad .interact{background:#c69f5c78;border-color:#f5d6a26b}.actionpad .pause-mini{display:none}
-.overlay{position:absolute;inset:0;z-index:10;background:radial-gradient(ellipse at 52% 45%,#16253899,#060e1be7);display:flex;align-items:center;justify-content:center;padding:calc(14px + env(safe-area-inset-top)) calc(15px + env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) calc(15px + env(safe-area-inset-left));backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}.overlay.hide{display:none}
-.card{position:relative;overflow:auto;overscroll-behavior:contain;max-height:100%;width:min(760px,100%);border:1px solid #ffffff30;border-radius:30px;background:linear-gradient(140deg,#152943f5 0,#111e32f5 60%,#211d38f7 100%);box-shadow:0 30px 95px #000b, inset 0 1px #ffffff26;display:grid;grid-template-columns:39% 61%;isolation:isolate}
-.card::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 55%,#f8a55230,transparent 45%),radial-gradient(circle at 75% 20%,#a084e323,transparent 38%)}
-.card-illustration{min-height:330px;position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse at 45% 65%,#78949a6e,#203f51ac 48%,#1025351a 70%);border-right:1px solid #ffffff14}.card-illustration::before{content:"";position:absolute;inset:-15%;background:repeating-conic-gradient(from -20deg,#c6bb8360 0deg 1deg,transparent 1deg 26deg);opacity:.12}.card-illustration::after{content:"";position:absolute;width:180px;height:180px;border:2px solid #d9bf8d45;border-radius:50%;left:50%;top:53%;transform:translate(-50%,-50%);box-shadow:0 0 0 30px #e8cf8b08,0 0 0 70px #e8cf8b08}
-.intro-img{position:absolute;z-index:3;filter:drop-shadow(0 16px 14px #070e1e88);object-fit:contain;object-position:center bottom;bottom:5px;max-height:81%}.intro-img.dipper{height:245px;width:48%;left:8%;transform:rotate(-7deg)}.intro-img.mabel{height:242px;width:50%;right:5%;transform:rotate(7deg)}.intro-eye{font-size:26px;position:absolute;top:13%;left:13%;z-index:2;color:#e8c7848a;transform:rotate(-14deg)}.intro-mark{position:absolute;left:18px;bottom:14px;z-index:4;font-size:9px;letter-spacing:.22em;font-weight:800;color:#f8dfb9ba}
-.card-content{position:relative;z-index:2;padding:clamp(24px,4vw,46px) clamp(24px,4.2vw,42px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-width:0}
-.eyebrow{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.25em;color:var(--gold)}.card h1{font-weight:800;font-size:clamp(27px,4.4vw,42px);line-height:1.14;letter-spacing:-.052em;margin:14px 0 13px;max-width:360px;color:#fff9ec}.card p{font-size:13px;font-weight:500;line-height:1.65;color:#d5e3e8;margin:0 0 28px}.button{font-size:13px;font-weight:800;letter-spacing:.01em;padding:15px 22px;border:0;border-radius:15px;background:linear-gradient(135deg,#ffd49c,#f2ba72);color:#261b20;box-shadow:0 7px 22px #eeb77434;min-height:49px}.button:active{transform:scale(.98)}.card-footer{font-size:9px;color:#b9c9d0a8;line-height:1.45;margin-top:18px}.sigil{position:absolute;right:15px;top:12px;font-size:13px;opacity:.38}
-@media(pointer:coarse){.mobile{display:flex}.controlrow{display:none}.hero-chip{top:calc(68px + env(safe-area-inset-top))}.quest-panel{top:calc(68px + env(safe-area-inset-top))}.brand{font-size:12px;letter-spacing:.12em}.brand small{font-size:8px}.topbar{gap:8px;padding-top:calc(9px + env(safe-area-inset-top));padding-bottom:7px}.hud{gap:7px;padding:7px 10px;border-radius:14px}.icon-btn{height:37px;min-width:37px;border-radius:12px}.quest-panel{padding:8px 10px}.avatar{width:29px;height:29px}.avatar img{height:45px}.hero-chip{padding:4px 10px 4px 4px}}
-@media(max-width:600px) and (orientation:portrait){.card{grid-template-columns:1fr;max-width:430px;border-radius:25px}.card-illustration{height:176px;min-height:176px;border:0;border-bottom:1px solid #ffffff15}.intro-img.dipper{height:174px;left:27%;width:31%}.intro-img.mabel{height:175px;right:24%;width:31%}.card-illustration::after{width:130px;height:130px}.card-content{padding:22px 24px 26px}.card h1{font-size:clamp(25px,6.4vw,34px);margin:9px 0}.card p{font-size:12px;margin-bottom:18px;line-height:1.55}.button{min-height:47px;padding:12px 20px}.card-footer{margin-top:12px}.hero-chip{right:12px}.topbar{padding-left:12px;padding-right:12px}.quest-panel{left:12px}.brand{font-size:10px}.brand small{font-size:7px}.hud{gap:5px}.hud-sep{display:none}#clock{display:none}.hud #hearts{font-size:12px}}
-@media(max-height:590px) and (orientation:landscape){.topbar{padding-top:calc(5px + env(safe-area-inset-top));padding-bottom:3px}.brand{font-size:10px}.brand small{display:none}.hud{padding:5px 9px}.icon-btn{height:32px;min-width:32px}.quest-panel{top:calc(49px + env(safe-area-inset-top));padding:5px 10px}.quest-head{font-size:8px;margin-bottom:1px}#quest{font-size:10px}.hero-chip{top:calc(49px + env(safe-area-inset-top))}.mobile{--pad:6px;padding-left:calc(8px + env(safe-area-inset-left));padding-right:calc(8px + env(safe-area-inset-right));bottom:calc(5px + env(safe-area-inset-bottom))}.dpad{--dsize:37px}.dpad .ctrl{font-size:16px;border-radius:12px}.actionpad{--asize:50px;gap:6px}.actionpad .ctrl{border-radius:16px;font-size:9px}.actionpad .ctrl span:first-child{font-size:17px}.card{max-width:660px;border-radius:20px}.card-illustration{min-height:200px}.intro-img.dipper{height:180px}.intro-img.mabel{height:179px}.card-content{padding:18px 24px}.card h1{font-size:25px;margin:7px 0 6px}.card p{font-size:11px;line-height:1.46;margin:0 0 12px}.button{padding:9px 14px;min-height:39px;font-size:12px}.card-footer{margin-top:9px;font-size:8px}}
-@media(max-width:355px){.brand{font-size:9px}.hud{padding:6px;gap:4px}#levelLabel{font-size:10px}#hearts{font-size:11px}.dpad{--dsize:43px}.actionpad{--asize:60px;gap:7px}.topbar{padding-left:9px;padding-right:9px}}
-</style></head>
-<body><main id="app"><section id="stage" aria-label="Игровое поле">
-<canvas id="game" aria-label="Gravity Falls: игра"></canvas>
-<header class="topbar"><div class="brand">GRAVITY <b>FALLS</b><small>ТАЙНА ПЯТОЙ СТРАНИЦЫ</small></div><div class="header-spacer"></div><div class="hud"><span id="levelLabel">1 / 5</span><span class="hud-sep"></span><span id="hearts">♥ ♥ ♥ ♥</span><span class="hud-sep"></span><span id="clock">00:00</span></div><button class="icon-btn" id="pauseBtn" type="button" aria-label="Пауза">Ⅱ</button></header>
-<div class="quest-panel"><div class="quest-head">Задача расследования</div><div id="quest">Ищем улики…</div></div>
-<div class="hero-chip"><div class="avatar"><img id="heroPortrait" data-character="dipper" alt="Диппер Пайнс"></div><div class="hero-meta"><strong id="heroLabel">Диппер</strong><small id="abilityLabel">Фонарик</small></div></div>
-<section class="mobile" aria-label="Управление на телефоне"><div class="dpad"><button class="ctrl up" data-key="up" aria-label="Вверх">↑</button><button class="ctrl left" data-key="left" aria-label="Влево">←</button><div class="center"></div><button class="ctrl right" data-key="right" aria-label="Вправо">→</button><button class="ctrl down" data-key="down" aria-label="Вниз">↓</button></div><div class="actionpad"><button class="ctrl switch" data-key="switch" aria-label="Сменить героя"><span>⇄</span>Герой</button><button class="ctrl ability" data-key="ability" aria-label="Использовать способность"><span>✦</span>Умение</button><button class="ctrl interact" data-key="interact" aria-label="Взять или активировать"><span>◎</span>Взять</button><button class="ctrl pause-mini" data-key="pause" aria-label="Пауза"><span>Ⅱ</span>Пауза</button></div></section>
-<div class="controlrow"><span><strong>WASD / ↑↓←→</strong> — движение</span><span><strong>E</strong> — взять · <strong>Space</strong> — умение · <strong>Tab</strong> — герой · <strong>P</strong> — пауза</span></div>
-<section class="overlay" id="overlay"><div class="card"><div class="card-illustration"><div class="intro-eye">△ ◉</div><img class="intro-img dipper" data-character="dipper" alt="Диппер Пайнс"><img class="intro-img mabel" data-character="mabel" alt="Мэйбл Пайнс"><div class="intro-mark">THE JOURNAL • 05</div></div><div class="card-content"><div class="sigil" id="overlayEmoji">🧢 📓 🌲</div><div class="eyebrow" id="overlayTag">Новое приключение</div><h1 id="overlayTitle">Тайна пятой страницы</h1><p id="overlayText">В Хижине чудес появилась страница из дневника, которой раньше никогда не существовало. Диппер и Мэйбл должны найти источник сигнала, пока весь Гравити Фолз не изменился навсегда.</p><button class="button" id="startBtn">Начать расследование ↗</button><div class="card-footer">5 коротких глав · Личный некоммерческий фан-проект</div></div></div></section>
-</section></main><script>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#111f2a"><title>Gravity Falls — Тайна пропавшей страницы</title><style>:root{--paper:#f7e7be;--ink:#2b221b;--gold:#ffd074;--navy:#152a35;--coral:#e97954}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;background:#091722;color:var(--paper)}
+body{font-family:ui-rounded,'Trebuchet MS',system-ui,-apple-system,sans-serif}button{font:inherit;border:none;touch-action:manipulation}#game{position:fixed;inset:0;width:100%;height:100%;height:100dvh;overflow:hidden;isolation:isolate;background:#111f2c}canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+#grain{position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.12;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' opacity='.24' d='M0 0h180v180H0z'/%3E%3C/svg%3E")}
+#header{z-index:5;position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top) + 12px) 17px 10px;display:none;align-items:center;justify-content:space-between;gap:12px;pointer-events:none}#header.show{display:flex}#header>*{pointer-events:auto}.stageTag{display:flex;gap:8px;align-items:center;min-width:0;flex:1;color:#fff7df;text-shadow:0 2px 12px #000;font-weight:900;letter-spacing:.08em;font-size:10px}.stageTag .chapter{border:1px solid #f1cb8d9e;color:#ffe5a0;padding:8px;border-radius:8px;background:#121a20b8;font-size:12px}.stageText{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:clamp(96px,27vw,180px)}.stageText small{font-size:10px;color:#cdd1c6;text-transform:uppercase;letter-spacing:.11em}.stageText strong{font-size:12px;letter-spacing:.04em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.headerRight{display:flex;align-items:center;gap:8px;flex-shrink:0}.pageChip{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#1b2323b8;border:1px solid #eee2bb7d;border-radius:12px;font-weight:900;font-size:13px}.pageChip svg{width:18px}.miniBtn{height:38px;min-width:38px;border-radius:12px;background:#17252ad9;border:1px solid #efe7ca80;color:#fff1d9;font-size:18px;display:grid;place-items:center}
+#progress{position:absolute;top:calc(env(safe-area-inset-top) + 68px);left:17px;right:17px;z-index:3;height:3px;background:#f9e5aa35;border-radius:9px;display:none;pointer-events:none}#progress.show{display:block}#progressFill{width:0;height:100%;background:linear-gradient(90deg,#e89a51,#ffe3a0);border-radius:9px;transition:width .3s}
+#controls{display:none;position:absolute;inset:auto 0 0;z-index:6;padding:0 max(14px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 16px) max(14px,env(safe-area-inset-left));height:208px;pointer-events:none;align-items:flex-end;justify-content:space-between;background:linear-gradient(0deg,rgba(7,18,24,.9),rgba(7,18,24,.47) 56%,transparent)}#controls.show{display:flex}#controls button,#controls #stickZone{pointer-events:auto;user-select:none;-webkit-user-select:none}#stickZone{width:142px;height:142px;border-radius:50%;display:grid;place-items:center;position:relative;touch-action:none;background:radial-gradient(circle at 50% 48%,#efe2bf13 0 29%,#d9bb7a19 62%,#cda56d0d 63%);border:2px solid #e9cc9280;box-shadow:inset 0 0 0 12px #0c1b2199,0 10px 40px #03090b55;flex-shrink:0}#stickZone::before,#stickZone::after{content:' ';position:absolute;background:#f5e3c477;pointer-events:none}#stickZone::before{height:1px;width:82px}#stickZone::after{height:82px;width:1px}#stickKnob{width:57px;height:57px;position:absolute;z-index:1;border-radius:50%;background:radial-gradient(circle at 30% 25%,#eddbc0,#c1a77e 50%,#856e54);border:3px solid #f1d6ae;box-shadow:0 4px 14px #0008,inset 0 3px 4px #fff5;display:grid;place-items:center;color:#34312a;font-size:26px;transition:transform .06s linear}.actions{display:flex;align-items:flex-end;gap:9px;padding-bottom:5px}.act{border:2px solid #f4d9ac;box-shadow:0 7px 0 #0007,0 9px 35px #0004,inset 0 3px 5px #fff4;border-radius:50%;font-weight:1000;color:#3d2920;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px}.act b{font-size:22px;line-height:1}.act small{font-size:9px;text-transform:uppercase;letter-spacing:.05em}.act:active,.act.active{transform:translateY(3px);box-shadow:0 3px 0 #0007}.actJump{height:89px;width:89px;background:linear-gradient(160deg,#ffe4a6,#e9ae58)}.actUse{height:69px;width:69px;margin-bottom:9px;background:linear-gradient(150deg,#f6c3aa,#e48e72);font-size:23px}.actUse small{font-size:8px}
+#toast{position:absolute;z-index:7;top:calc(env(safe-area-inset-top) + 106px);left:50%;transform:translateX(-50%) translateY(-12px);background:#142329ed;border:1px solid #f6deb98f;border-radius:12px;max-width:calc(100vw - 54px);color:#fdf0ce;padding:10px 13px;font-size:12px;line-height:1.3;font-weight:750;min-width:150px;text-align:center;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;box-shadow:0 14px 33px #0004}#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#menu,#dialog,#end,#pause{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;text-align:center}#menu{z-index:8}#menu.show,#dialog.show,#end.show,#pause.show{display:flex}.vignette{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#061118d1 0%,transparent 29%,#081720a1 73%,#071118ef 100%)}
+.menuBody{position:relative;z-index:2;width:100%;max-width:460px;min-height:min(94dvh,880px);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 35px) 20px calc(env(safe-area-inset-bottom) + 24px)}.eyebrow{color:#ffe0a0;text-transform:uppercase;font-weight:900;letter-spacing:.26em;font-size:11px;text-shadow:0 2px 12px #08161c}.logo{font-family:Impact,'Arial Black',system-ui,sans-serif;text-transform:uppercase;line-height:.9;letter-spacing:.04em;font-size:clamp(53px,14vw,85px);-webkit-text-stroke:2px #533821;color:#ffdc91;text-shadow:0 4px 0 #774c28,0 8px 0 #35251d,0 12px 26px #000b;transform:rotate(-2deg);margin:15px 0 12px}.subtitle{max-width:280px;color:#f6ebd3;font-size:15px;letter-spacing:.05em;line-height:1.35;text-shadow:0 2px 12px #000;font-weight:900}.seal{margin:16px 0 6px;display:flex;align-items:center;gap:8px;color:#e3d1ac;letter-spacing:.1em;font-size:10px;text-transform:uppercase}.seal:before,.seal:after{content:'';height:1px;width:40px;background:#f7d19b80}.menuArt{position:relative;flex:1;width:100%;min-height:150px;display:flex;justify-content:center;align-items:end;gap:0;filter:drop-shadow(0 12px 18px #0008)}.menuArt img{height:clamp(150px,28dvh,250px);width:auto;object-fit:contain}.menuArt img:nth-child(1){transform:rotate(-5deg) translateX(15px)}.menuArt img:nth-child(2){transform:rotate(7deg) translateX(-12px) translateY(10px)}.menuBottom{width:100%;display:flex;align-items:center;flex-direction:column;gap:14px}.description{font-size:12px;color:#ddd8c6;line-height:1.5;max-width:290px;text-shadow:0 2px 7px #000}.primary{width:min(100%,334px);min-height:58px;border-radius:12px;border:2px solid #4f3327;color:#33271c;background:linear-gradient(#ffe4a3,#dfaa65);font-size:17px;font-weight:1000;letter-spacing:.07em;text-transform:uppercase;box-shadow:0 5px 0 #78502f,0 11px 32px #0008;display:flex;align-items:center;justify-content:center;gap:10px;transition:transform .15s}.primary:active{transform:translateY(4px);box-shadow:0 1px 0 #78502f}.secondary{background:transparent;color:#e6d4b2;font-size:12px;font-weight:900;letter-spacing:.08em;padding:8px}.credits{font-size:9px;line-height:1.25;max-width:310px;color:#b7b5ac;text-shadow:0 2px 6px #000}
+#dialog,#end,#pause{background:#07141bc7;backdrop-filter:blur(5px);z-index:10;padding:calc(env(safe-area-inset-top) + 15px) 20px calc(env(safe-area-inset-bottom) + 15px)}.storyCard{width:min(100%,370px);max-height:90%;overflow:auto;background:linear-gradient(135deg,#f9e7c1,#ddc49b);border:6px solid #5b4431;outline:2px solid #ddbf85;box-shadow:0 20px 70px #000b, inset 0 0 50px #9d744122;position:relative;padding:25px 20px 22px;color:#34251d;text-align:left;transform:rotate(-.6deg);border-radius:5px;clip-path:polygon(0 0,100% .6%,99.7% 100%,.3% 99.4%)}.storyCard::after{content:'';position:absolute;pointer-events:none;inset:10px;border:1px dashed #87663b55}.storySmall{font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:#805637;font-weight:900}.storyTitle{font-family:Georgia,serif;font-weight:1000;font-size:30px;letter-spacing:-.035em;line-height:1.1;margin:10px 0 16px}.storyText{font:16px/1.58 Georgia,serif;margin:0 0 20px;white-space:pre-wrap}.storyHero{height:100px;float:right;margin:-12px -4px 5px 5px;filter:drop-shadow(0 3px 4px #0003)}.storyButton{width:100%;background:#334d49;color:#fff5d6;border:2px solid #1f302d;border-radius:8px;min-height:50px;font-weight:900;letter-spacing:.04em;font-size:14px;box-shadow:0 3px 0 #192c27}.pauseMenu{background:#19272df2;color:#f6e2bb;border:1px solid #e2c6938f;border-radius:21px;padding:24px;width:min(330px,100%);box-shadow:0 20px 70px #0009;text-align:center}.pauseMenu h2{margin:4px 0 20px;font:700 25px Georgia,serif}.pauseMenu button{width:100%;min-height:49px;margin:5px 0;background:#e8c387;border-radius:12px;border:2px solid #44362b;color:#332617;font-weight:900}.pauseMenu button.alt{background:#253c41;border-color:#71847a;color:#fff6dc}
+@media (max-height:670px){.menuBody{padding-top:calc(env(safe-area-inset-top) + 12px);padding-bottom:calc(env(safe-area-inset-bottom) + 12px)}.logo{font-size:clamp(44px,13vw,65px);margin:5px 0}.subtitle{font-size:12px}.menuArt img{height:clamp(110px,22dvh,160px)}.seal{margin:7px 0 0}.description{font-size:10px}.menuBottom{gap:7px}#controls{height:156px;padding-bottom:calc(env(safe-area-inset-bottom) + 8px)}#stickZone{height:112px;width:112px}#stickKnob{height:49px;width:49px}.actJump{height:72px;width:72px}.actUse{height:57px;width:57px}.stageTag .chapter{padding:6px}}
+@media (min-width:700px){#game{max-width:620px;left:50%;transform:translateX(-50%);box-shadow:0 0 80px #000}#controls{padding-left:26px;padding-right:26px}.menuBody{max-width:500px}}
 
-'use strict';
-const c=document.getElementById('game'),ctx=c.getContext('2d');let W=960,H=540;const T=48,WW=44,WH=18;
-const $=x=>document.getElementById(x),overlay=$('overlay'),quest=$('quest');
-const stories=[
-{title:'Ночь в Хижине чудес',sub:'Кто-то подменил страницы дневника.',desc:'Стэн уверен, что в магазине завелись «скидочные полтергейсты». Собери три обрывка дневника, открой тайный знак Диппером и включи розовый переключатель Мэйбл.',hint:'Вход в тайник откроется только после двух умений.',color:'#614535',ground:'#344a43',collect:'📜',item:'обрывка',enemy:'gnome',gaps:[[3,12],[5,14],[3,13],[5,14]]},
-{title:'Лес, который шепчет',sub:'Деревья повторяют чужие голоса.',desc:'Гномы украли три сигнальных фонаря. Верни их и проберись через лес. Свет Диппера обнаружит спрятанную руну, а блестящая звезда Мэйбл запустит древний механизм.',hint:'Уклоняйся от гномов: они быстрые, но не очень умные.',color:'#294f43',ground:'#244b3b',collect:'🏮',item:'фонаря',enemy:'gnome',gaps:[[4,14],[3,12],[5,14],[3,13]]},
-{title:'Озеро двойников',sub:'В отражении появляются лишние люди.',desc:'На берегу разбросаны три осколка зеркала. Осторожно: тени здесь ожили. Диппер находит скрытые символы, Мэйбл отвлекает призраков своей сияющей звездой.',hint:'Держись подальше от светящихся луж: они обжигают.',color:'#315f78',ground:'#2f5260',collect:'💎',item:'осколка',enemy:'ghost',gaps:[[3,13],[5,14],[4,13],[3,14]]},
-{title:'Бункер без номера',sub:'Двери ведут туда, куда не должны.',desc:'В глубине забытого бункера включился странный автомат. Найди три энергетических ядра, доберись до консоли и приготовься к тому, что реальность начинает ломаться.',hint:'Здесь много патрулей. Звезда Мэйбл оглушает их на время.',color:'#52596d',ground:'#404755',collect:'⚡',item:'ядра',enemy:'bot',gaps:[[4,13],[3,14],[5,12],[3,14]]},
-{title:'Пятая страница',sub:'Билл снова нашёл лазейку.',desc:'Последняя страница оказалась ловушкой Билла Шифра! Собери три печати. Затем Диппер должен осветить Билла, а Мэйбл — трижды попасть в него своей звездой, пока он уязвим.',hint:'Финальный бой: свет Диппера → звезда Мэйбл × 3.',color:'#70513e',ground:'#413c56',collect:'🔺',item:'печати',enemy:'eye',gaps:[[3,13],[4,14],[3,12],[5,13]]}
+#puzzle{position:absolute;inset:0;z-index:10;display:none;align-items:center;justify-content:center;background:#081b1fe0;padding:calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 14px);backdrop-filter:blur(6px)}#puzzle.show{display:flex}.puzzleCard{max-width:360px;width:100%;background:linear-gradient(#f8e8c6,#d9bc8e);color:#36281c;border:6px solid #5e4730;outline:2px solid #d2a96b;padding:23px 17px;border-radius:4px;box-shadow:0 20px 70px #000a}.puzzleCard h2{font:900 27px Georgia,serif;margin:7px 0 11px}.puzzleCard p{font:15px/1.5 Georgia,serif}.sequence{display:flex;align-items:center;justify-content:center;min-height:56px;font-size:29px;letter-spacing:.17em;background:#c1a16b55;border-radius:11px;margin:14px 0;border:1px dashed #7e5d37}.glyphButtons{display:flex;justify-content:center;gap:10px;margin:18px 0 7px}.glyphButton{font-size:35px;color:#f6dfb4;background:#344c4e;border:2px solid #263a3f;border-radius:13px;width:85px;height:74px;box-shadow:0 5px 0 #21312e;touch-action:manipulation}.glyphButton:active{transform:translateY(4px);box-shadow:0 1px 0 #21312e}.puzzleStatus{font:900 12px ui-rounded,system-ui,sans-serif;text-align:center;min-height:18px;letter-spacing:.06em;margin-top:16px;color:#66482e}
+
+@media (max-height:500px) and (orientation:landscape){.menuBody{min-height:100%;height:100%;padding:7px 12px;justify-content:center;gap:5px}.eyebrow{font-size:8px;letter-spacing:.15em}.logo{font-size:42px;margin:4px 0;line-height:.86}.subtitle{font-size:10px}.menuArt,.seal,.description,.credits{display:none!important}.menuBottom{gap:4px}.primary{min-height:46px;font-size:14px;width:280px}.storyCard{padding:10px 17px;max-height:90dvh}.storyTitle{font-size:21px;margin:4px 0 9px}.storyText{font-size:12px;line-height:1.3;margin:0 0 9px}.storyHero{height:60px}.storyButton{min-height:38px}}
+.glyphButton:disabled{opacity:.37;filter:grayscale(.7);transform:none!important}#puzzleSequence{min-height:52px} </style></head><body><div id="game"><canvas id="scene" aria-label="Игровая сцена"></canvas><div id="grain"></div>
+<div id="header"><div class="stageTag"><span id="chapter" class="chapter">01</span><div class="stageText"><small>МОБИЛЬНАЯ V4 · <span id="hearts" style="color:#ffd093">♥♥♥</span></small><strong id="stageName">Хижина чудес</strong></div></div><div class="headerRight"><div class="pageChip"><svg viewBox="0 0 24 24" fill="none"><path d="M4 4l8 2 8-2v15l-8 2-8-2V4Z" stroke="#ffdfa2" stroke-width="2"/><path d="M12 6v15" stroke="#ffdfa2" stroke-width="2"/></svg><span id="count">0/3</span></div><button class="miniBtn" id="characterButton" title="Сменить героя" aria-label="Сменить героя"><img id="charImage" style="height:32px;width:26px;object-fit:contain"></button><button class="miniBtn" id="pauseButton" title="Пауза" aria-label="Пауза">Ⅱ</button></div></div>
+<div id="progress"><div id="progressFill"></div></div><div id="toast"></div>
+<div id="controls"><div id="stickZone" aria-label="Джойстик движения"><div id="stickKnob">↔</div></div><div class="actions"><button class="act actUse" id="useButton" aria-label="Использовать способность или взять предмет"><b>✦</b><small id="useName">СВЕТ</small></button><button class="act actJump" id="jumpButton" aria-label="Прыжок"><b>↥</b><small>ПРЫЖОК</small></button></div></div>
+<section id="menu" class="show"><div class="vignette"></div><div class="menuBody"><div><div class="eyebrow">СОЗДАНО ДЛЯ ТЕЛЕФОНА • V4</div><h1 class="logo">GRAVITY<br>FALLS</h1><div class="subtitle">ТАЙНА ПРОПАВШЕЙ<br>СТРАНИЦЫ</div><div class="seal">5 ТАЙН • 2 ГЕРОЯ</div></div><div class="menuArt"><img id="menuDipper" alt="Диппер"><img id="menuMabel" alt="Мэйбл"></div><div class="menuBottom"><p class="description">5 глав • скрытые улицы • враги и ловушки • настоящие шифры. В первой главе два героя вместе открывают секретную дверь.</p><button class="primary" id="startButton">Начать приключение →</button><button id="newGameButton" class="secondary" style="display:none">Начать историю заново</button><div class="credits">Неофициальная фанатская мини-игра. Персонажи принадлежат создателям Gravity Falls.</div></div></div></section>
+<section id="dialog"><div class="storyCard"><span class="storySmall" id="storyKicker"></span><img id="storyPortrait" class="storyHero" alt="Персонаж"><div class="storyTitle" id="storyTitle"></div><p class="storyText" id="storyText"></p><button class="storyButton" id="storyGo">Продолжить →</button></div></section>
+<section id="puzzle"><div class="puzzleCard"><div class="storySmall">ШИФР ДНЕВНИКА</div><h2 id="puzzleHead">Открой печать</h2><p id="puzzleHint"></p><div id="puzzleSequence" class="sequence"></div><div class="glyphButtons" id="puzzleButtons"></div><div class="puzzleStatus" id="puzzleStatus"></div></div></section><section id="pause"><div class="pauseMenu"><h2>Дневник закрыт</h2><p style="opacity:.8;font-size:13px;margin-bottom:15px">Приключение никуда не исчезло.</p><button id="resumeButton">Вернуться к делу</button><button class="alt" id="audioButton">Звук: выкл</button><button class="alt" id="retryButton">Начать главу заново</button><button class="alt" id="homeButton">Главное меню</button></div></section>
+<section id="end"><div class="pauseMenu"><div class="storySmall" id="endHead">ОЙ, НЕТ</div><h2 id="endTitle">Попробуй ещё раз</h2><p id="endDescription">На этот раз будь осторожнее.</p><button id="endButton">Повторить</button></div></section>
+</div><script id="spriteDipper" type="text/plain"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 310">
+<defs>
+ <linearGradient id="skin" x2=".8" y2="1"><stop stop-color="#ffe2b8"/><stop offset="1" stop-color="#f3b588"/></linearGradient>
+ <linearGradient id="cap" x2="0" y2="1"><stop stop-color="#f8f6ea"/><stop offset="1" stop-color="#d8dcce"/></linearGradient>
+ <linearGradient id="vest" x2="0" y2="1"><stop stop-color="#314c65"/><stop offset="1" stop-color="#20374f"/></linearGradient>
+</defs>
+<g stroke="#39271f" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round">
+ <!-- back pack -->
+ <path d="M127 170Q153 169 154 210L144 234L117 217Z" fill="#7e8466"/>
+ <path d="M138 189L145 204" stroke="#5b6355" fill="none"/>
+ <!-- rear hair -->
+ <path d="M49 80Q29 92 39 127L30 139L44 140Q39 156 58 159L120 150L138 117L119 76Z" fill="#6d3b24"/>
+ <!-- legs -->
+ <path d="M68 237L67 275L87 275L91 234" fill="url(#skin)"/>
+ <path d="M109 237L110 275L131 274L130 233" fill="url(#skin)"/>
+ <path d="M69 265L87 265M111 265L130 265" stroke="#d75b45" stroke-width="5"/>
+ <path d="M66 276Q58 277 54 285Q54 297 69 299L94 296L95 286L86 277Z" fill="#242c32"/>
+ <path d="M109 276Q105 283 103 291Q106 301 121 301L150 297L150 289L131 278Z" fill="#242c32"/>
+ <path d="M59 292L94 293M107 294L149 293" stroke="#eae6d7" stroke-width="4"/>
+ <!-- shorts -->
+ <path d="M60 219L138 217L138 251L101 250L97 239L91 251L59 249Z" fill="#69716e"/>
+ <path d="M99 222L100 248" stroke="#424a4a" stroke-width="3"/>
+ <!-- arms -->
+ <path d="M57 171Q35 182 32 217L38 227L47 226L66 195" fill="url(#skin)"/>
+ <path d="M37 215Q30 215 30 222L34 232Q42 239 46 228" fill="url(#skin)"/>
+ <path d="M131 172Q153 177 158 210L151 222L145 219L121 191" fill="url(#skin)"/>
+ <path d="M151 212Q160 209 163 216L157 231Q151 234 146 226" fill="url(#skin)"/>
+ <!-- body -->
+ <path d="M58 166Q74 156 96 156Q121 154 133 168L139 225Q96 238 55 224Z" fill="#e36e48"/>
+ <path d="M63 166L80 173L74 222L54 222L55 189Z" fill="url(#vest)"/>
+ <path d="M122 165L107 174L116 224L139 223L137 189Z" fill="url(#vest)"/>
+ <path d="M82 175L82 224M111 175L112 226" stroke="#bd563c" stroke-width="2"/>
+ <!-- neck -->
+ <path d="M82 151L83 168Q96 179 110 167L109 148" fill="url(#skin)"/>
+ <!-- ears -->
+ <path d="M43 111Q25 99 27 122Q30 141 46 135" fill="url(#skin)"/>
+ <path d="M139 111Q153 98 156 117Q159 134 143 137" fill="url(#skin)"/>
+ <!-- head, asym -->
+ <path d="M42 79Q59 55 96 57Q139 58 146 101Q150 143 117 163Q81 177 51 150Q37 134 38 109Z" fill="url(#skin)"/>
+ <!-- hair locks -->
+ <path d="M48 82Q54 69 66 68L62 85Q72 70 84 68L82 81Q95 67 107 73Q111 82 108 91Q98 83 91 88L78 87Q67 94 51 92Z" fill="#76442b"/>
+ <path d="M128 75Q145 88 148 105L138 97" fill="#76442b"/>
+ <!-- eyes -->
+ <path d="M66 98Q74 92 84 99Q97 114 90 130Q83 139 72 130Q61 118 66 98Z" fill="#fffaf0" stroke-width="3.5"/>
+ <path d="M92 97Q102 89 113 97Q123 108 118 124Q114 136 101 134Q90 128 90 116Z" fill="#fffaf0" stroke-width="3.5"/>
+ <circle cx="82" cy="115" r="4" fill="#221d20" stroke="none"/><circle cx="101" cy="113" r="4" fill="#221d20" stroke="none"/>
+ <path d="M65 95Q76 87 86 94M97 93Q108 86 115 95" stroke="#4b2a20" stroke-width="3" fill="none"/>
+ <path d="M75 134Q93 148 110 131" fill="none" stroke-width="3"/>
+ <path d="M86 140Q95 146 103 141" fill="none" stroke="#9e4b43" stroke-width="2.5"/>
+ <ellipse cx="95" cy="129" rx="9" ry="7" fill="#eba37d" stroke-width="2.5"/>
+ <path d="M57 130L64 132M125 130L131 128" stroke="#d58c74" stroke-width="2"/>
+ <!-- hat and iconic pine -->
+ <path d="M47 82Q37 46 61 30Q86 13 113 24Q136 34 139 73L124 87L65 91Z" fill="url(#cap)"/>
+ <path d="M46 79Q35 48 57 29Q67 21 82 21L84 86L65 91Z" fill="#356887"/>
+ <path d="M83 19Q113 18 129 34Q138 46 139 73L113 78L84 78Z" fill="#f5f2e8"/>
+ <path d="M110 43L123 65L116 65L119 70L99 70L104 64L97 64Z" stroke="none" fill="#216389"/>
+ <path d="M41 78Q58 67 88 69Q115 68 145 74Q153 79 151 87Q147 94 130 92Q90 86 51 94Q34 93 37 85Z" fill="#366a8b"/>
+ <path d="M39 84Q94 75 148 83" stroke="#5385a1" stroke-width="2" fill="none"/>
+</g></svg>
+</script><script id="spriteMabel" type="text/plain"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 310">
+<defs><linearGradient id="face" x2=".8" y2="1"><stop stop-color="#ffe4c0"/><stop offset="1" stop-color="#f3b790"/></linearGradient><linearGradient id="sweater" x2="0" y2="1"><stop stop-color="#b088bc"/><stop offset="1" stop-color="#8e63a3"/></linearGradient></defs>
+<g stroke="#3d2a25" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+<!-- flowing hair behind body -->
+<path d="M55 59Q38 71 39 116L31 209Q34 242 62 243L91 239Q104 257 135 239Q153 235 151 193L149 93Q132 41 92 42Z" fill="#77452e"/>
+<path d="M44 183Q40 223 58 234M145 178Q154 222 127 238" fill="none" stroke="#91563a" stroke-width="3"/>
+<!-- legs -->
+<path d="M69 252L67 283L85 283L91 249" fill="url(#face)"/>
+<path d="M109 250L110 283L129 283L130 248" fill="url(#face)"/>
+<path d="M68 276L86 276M111 275L129 275" stroke="#f6ede8" stroke-width="7"/>
+<path d="M65 282Q52 290 54 297L91 298Q97 295 88 283Z" fill="#efebe6"/>
+<path d="M108 283Q101 293 110 299L147 299Q150 292 130 283Z" fill="#f4ece4"/>
+<path d="M56 293L92 293M110 295L147 295" stroke="#b45a57" stroke-width="4"/>
+<!-- skirt -->
+<path d="M60 229Q99 241 134 227L139 253Q102 266 58 253Z" fill="#b35875"/>
+<path d="M68 243Q97 253 128 241" fill="none" stroke="#da7991" stroke-width="3"/>
+<!-- arms out -->
+<path d="M65 172Q48 176 26 209Q22 214 20 216L27 228Q52 218 76 202" fill="url(#sweater)"/>
+<path d="M127 169Q149 172 167 200L174 214L162 226Q143 205 116 197" fill="url(#sweater)"/>
+<path d="M21 216Q10 216 13 225L21 230Q26 232 29 226L34 224" fill="url(#face)"/>
+<path d="M171 211Q181 204 183 216L175 225Q169 232 163 223" fill="url(#face)"/>
+<!-- sweater -->
+<path d="M60 167Q77 157 96 157Q121 157 134 169L140 232Q97 248 53 232Z" fill="url(#sweater)"/>
+<path d="M77 163Q99 178 116 163" fill="none" stroke="#6f4c80" stroke-width="5"/>
+<path d="M68 221Q98 232 129 218" fill="none" stroke="#cdabd3" stroke-width="2"/>
+<!-- sweater rainbow -->
+<path d="M74 217Q94 178 120 217" fill="none" stroke="#df6b82" stroke-width="10"/>
+<path d="M77 215Q95 187 117 215" fill="none" stroke="#e8ac5a" stroke-width="7"/>
+<path d="M80 215Q95 196 114 215" fill="none" stroke="#86d29d" stroke-width="5"/>
+<path d="M66 217Q60 210 54 216Q53 227 69 226Q80 226 75 218Z" fill="#fdf3e0" stroke="none"/>
+<path d="M121 216Q130 209 136 216Q143 228 124 227Q114 228 117 220Z" fill="#fdf3e0" stroke="none"/>
+<path d="M38 197L41 202L47 202L43 207L44 213L38 210L32 213L33 207L29 203L35 202Z" fill="#f5dc78" stroke="none"/>
+<!-- neck -->
+<path d="M82 147L82 165Q97 175 112 165L113 144Z" fill="url(#face)"/>
+<!-- front hair frame -->
+<path d="M48 78Q46 52 70 41Q97 25 124 48Q151 65 145 95L136 120L53 118Z" fill="#75452f"/>
+<!-- face -->
+<path d="M48 87Q59 65 86 60Q122 55 137 80Q149 101 143 129Q131 165 98 170Q63 169 48 142Q38 119 48 87Z" fill="url(#face)"/>
+<!-- ear -->
+<path d="M137 118Q154 111 157 125Q159 137 144 143" fill="url(#face)"/>
+<!-- bangs -->
+<path d="M49 93Q50 63 77 52Q101 45 122 57Q117 70 96 75Q76 79 67 92Q62 100 50 100Z" fill="#78472e"/>
+<path d="M118 56Q139 65 142 95L135 103Q125 94 123 84Z" fill="#78472e"/>
+<path d="M122 48Q138 56 143 76L135 81Q129 61 116 57Z" fill="#e14e73" stroke="#a93c62" stroke-width="2"/>
+<!-- eyes -->
+<path d="M63 99Q77 93 86 105Q96 119 87 132Q78 139 68 132Q57 123 63 99Z" fill="#fffefa" stroke-width="3"/>
+<path d="M92 99Q103 89 116 99Q130 117 121 132Q112 142 101 132Q89 122 92 99Z" fill="#fffefa" stroke-width="3"/>
+<circle cx="81" cy="118" r="4.3" fill="#241c20" stroke="none"/><circle cx="107" cy="117" r="4.3" fill="#241c20" stroke="none"/>
+<path d="M60 96L56 93M64 94L63 89M116 94L120 89M120 98L125 94" stroke-width="2.3" fill="none"/>
+<ellipse cx="94" cy="128" rx="8" ry="6" fill="#e9a082" stroke-width="2"/>
+<ellipse cx="58" cy="138" rx="9" ry="6" fill="#f9a3a0" stroke="none" opacity=".75"/><ellipse cx="132" cy="137" rx="9" ry="6" fill="#f9a3a0" stroke="none" opacity=".75"/>
+<!-- grin with braces -->
+<path d="M73 141Q95 160 118 140Q111 166 95 166Q77 164 73 141Z" fill="#5b3034" stroke-width="2.5"/>
+<path d="M77 145Q95 153 115 145L112 152Q94 158 79 152Z" fill="#fdfdf1" stroke-width="1.7"/>
+<path d="M85 148L86 154M95 150L95 156M104 149L104 154" stroke="#aaaaad" stroke-width="1.5"/>
+<path d="M82 150Q95 153 109 149" fill="none" stroke="#a9aab0" stroke-width="1.4"/>
+</g></svg>
+</script><script id="spriteBill" type="text/plain"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 330">
+<defs><linearGradient id="b" x2=".7" y2="1"><stop stop-color="#ffe98b"/><stop offset=".55" stop-color="#f8c545"/><stop offset="1" stop-color="#b77c2f"/></linearGradient><filter id="g"><feGaussianBlur stdDeviation="8"/></filter></defs>
+<path d="M126 32L241 252H10Z" fill="#ffe78c" opacity=".27" filter="url(#g)"/>
+<g stroke="#2f241b" stroke-linecap="round" stroke-linejoin="round">
+<path d="M126 34L233 251H19Z" fill="url(#b)" stroke-width="10"/>
+<path d="M82 119H175M65 156H193M47 195H215M31 231H225" stroke-width="2" opacity=".22"/>
+<path d="M121 30L124 12L144 11L147 30" fill="#26202b" stroke-width="5"/><path d="M106 31H163" stroke-width="9"/>
+<path d="M77 136Q104 108 141 116Q180 127 174 157Q169 182 131 184Q85 184 77 155Q74 146 77 136Z" fill="#fffef0" stroke-width="5"/>
+<ellipse cx="126" cy="150" rx="13" ry="29" fill="#27202b" stroke-width="2"/>
+<circle cx="131" cy="137" r="5" fill="#fff" stroke="none"/>
+<path d="M114 206Q129 215 144 205" stroke-width="4" fill="none"/>
+<path d="M107 239L139 239L135 260L112 260Z" fill="#1a1925" stroke-width="4"/>
+<path d="M123 240L113 233L113 246Z" fill="#d8a63b" stroke="none"/><path d="M124 240L136 233L136 246Z" fill="#d8a63b" stroke="none"/>
+<path d="M29 183Q-8 170 8 144M220 183Q257 170 242 140M74 255L51 317M178 254L200 317" fill="none" stroke-width="8"/>
+</g></svg>
+</script><script>
+(()=>{'use strict';
+const $=s=>document.querySelector(s), canvas=$('#scene'),ctx=canvas.getContext('2d',{alpha:false});
+const ui={menu:$('#menu'),dialog:$('#dialog'),end:$('#end'),pause:$('#pause'),puzzle:$('#puzzle'),controls:$('#controls'),header:$('#header'),progress:$('#progress'),progressFill:$('#progressFill'),toast:$('#toast'),chapter:$('#chapter'),stageName:$('#stageName'),count:$('#count'),hearts:$('#hearts'),use:$('#useButton'),useName:$('#useName'),stick:$('#stickZone'),knob:$('#stickKnob'),jump:$('#jumpButton')};
+const svgEls={dipper:$('#spriteDipper').textContent.trim(),mabel:$('#spriteMabel').textContent.trim(),bill:$('#spriteBill').textContent.trim()};
+const img={};Object.entries(svgEls).forEach(([k,v])=>{const a=new Image();a.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(v);img[k]=a;});
+const LEVELS=[
+ {name:'Хижина чудес',tag:'Пропавшая страница',sky:['#334956','#8b7862'],floor:'#5b4334',accent:'#f2ca77',stuff:'страницы',intro:['НОЧЬ В ХИЖИНЕ ЧУДЕС','Кто-то запер запасной выход. На стенах появляются символы, которых раньше здесь не было.','«Сначала найди скрытую страницу. Потом открой двойной замок. И берегись гнома, охраняющего второй обрывок!»\n— Диппер'],outro:'Последний обрывок показывает три глаза и дорогу в шепчущий лес.',items:[1150,3900,6800],enemies:[740,1880,3150,3900,4860,6030,7410],hazards:[950,2130,3330,4720,5750,7240],color:'#edb873',world:8000},
+ {name:'Шепчущий лес',tag:'Гномы знают больше',sky:['#1b434a','#52725e'],floor:'#3f533c',accent:'#9ae0ab',stuff:'руны',intro:['Слишком тихо.','В лесу гномы рисуют на деревьях знак, которого нет ни в одном дневнике.','«Они прячут что-то возле старой тропы».\n— Мэйбл'],outro:'Три руны сложились в карту. Путь ведёт к озеру.',items:[1780,5180,8500],enemies:[1260,3550,6820,9490],hazards:[2490,6080,9180],color:'#9ae0ab',world:11200},
+ {name:'Озеро отражений',tag:'Не верь двойникам',sky:['#193451','#867b9b'],floor:'#405460',accent:'#c4dafa',stuff:'осколки',intro:['Вода шепчет чужими голосами.','На озере отражения опаздывают на несколько секунд. Иногда они уходят раньше хозяев.','«Если моё отражение попросит конфеты — это подозрительно».\n— Мэйбл'],outro:'В осколках отражается металлическая дверь. Где-то под озером работает старый бункер.',items:[1700,5120,8430],enemies:[1300,3530,6800,9470],hazards:[2430,6100,9210],color:'#adccf2',world:11200},
+ {name:'Бункер Форда',tag:'Система без хозяина',sky:['#152c3b','#304757'],floor:'#445459',accent:'#f2b76a',stuff:'ключи',intro:['Здесь всё ещё есть электричество.','Старая установка Форда сама включилась и пытается открыть портал.','«Ладно. Три предохранителя. Что может пойти не так?»\n— Диппер'],outro:'Дверь открылась. За ней нет стены, только чужое небо.',items:[1800,5150,8490],enemies:[1400,3550,6840,9520],hazards:[2430,6100,9240],color:'#f4ba6f',world:11200},
+ {name:'Разлом Билла',tag:'Три печати',sky:['#352447','#be684f'],floor:'#6b4453',accent:'#ffe580',stuff:'печати',intro:['«Привет, соседи!»','Голос Билла раздаётся из каждого отражения. Последний разлом держится на трёх печатях.','«Никаких сделок с треугольниками».\n— Диппер'],outro:'Три печати рассыпались. Гравити Фолз снова выглядит почти нормально. Почти.',items:[1740,5070,8500],enemies:[1290,3510,6820,9550],hazards:[2470,6080,9230],color:'#ffe07c',world:11200}
 ];
-let state='intro',lv=0,hero=0,player={x:2*T+24,y:9*T+24,r:16},world,items=[],enemies=[],hazards=[],rune,switcher,door,boss,barriers=[];
-let collected=0,hearts=4,elapsed=0,lvElapsed=0,abilityCooldown=0,invulnerable=0,flash=0,stars=[],particles=[],toast='',toastTimer=0,last=0,cam={x:0,y:0};
-const input={up:false,down:false,left:false,right:false};
-const ART={
- dipper:'https://assets.stickpng.com/images/5b45cb55c051e602a568cd13.png',
- mabel:'https://assets.stickpng.com/images/5b45cbe4c051e602a568cd22.png',
- bill:'https://assets.stickpng.com/images/5b45cb62c051e602a568cd15.png'
-};
-const FALLBACK={dipper:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNTEwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9ItCU0LjQv9C/0LXRgCDQn9Cw0LnQvdGBIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza2luIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZDJhMiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2VmYTg4MCIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJjYXAiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjNjZhNGNiIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMmI1NzdjIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxnIHN0cm9rZT0iIzNkMmIyOCIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiPgo8IS0tIGJhY2sgbGVncyBhbmQgc2hvZXMgLS0+CjxwYXRoIGQ9Ik0xMTIgMzk0IEwxMDYgNDU5IFExMTQgNDcxIDEzMSA0NjQgTDE0MyAzOThaIiBmaWxsPSIjZjZkNGE1Ii8+CjxwYXRoIGQ9Ik0xNjggMzkxIEwxNzAgNDU1IFExODEgNDY4IDE5NiA0NTcgTDE5NSAzOTRaIiBmaWxsPSIjZjNjNTlhIi8+CjxwYXRoIGQ9Ik0xMDAgNDUxIFExMDggNDM4IDEyOCA0NDMgTDEzNiA0NjQgUTE0NSA0NzUgMTM1IDQ4MCBMOTQgNDgwIFE3NiA0NzIgODggNDYyWiIgZmlsbD0iI2YwZWVlMCIvPgo8cGF0aCBkPSJNMTY5IDQ0NiBRMTg4IDQ0MCAxOTUgNDQ5IEwyMTAgNDU5IFEyMzUgNDcwIDIxOSA0NzkgTDE3MiA0NzkgUTE2MSA0NjkgMTY5IDQ0NloiIGZpbGw9IiNmMGVlZTAiLz4KPHBhdGggZD0iTTkyIDQ2NCBMMTM1IDQ2NiBNMTczIDQ2NiBMMjIxIDQ2OSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjY2I1MDQ4IiBzdHJva2Utd2lkdGg9IjgiLz4KPCEtLSBzaG9ydHMgLS0+CjxwYXRoIGQ9Ik0xMDQgMzU3IFExMzcgMzQyIDE4OCAzNTYgTDE5OCA0MDggUTE4MSA0MTcgMTU5IDQwMyBMMTUwIDM4NSBMMTQyIDQwNiBRMTI0IDQxNSA5OCA0MDZaIiBmaWxsPSIjMzQ0YTU1Ii8+CjwhLS0gYXJtcyBiZWhpbmQgdmVzdCAtLT4KPHBhdGggZD0iTTEwMyAyNTcgUTYyIDI3OCA1OSAzMzIgTDc3IDM0NyBROTMgMzM1IDExNyAzMDBaIiBmaWxsPSJ1cmwoI3NraW4pIi8+CjxwYXRoIGQ9Ik0xOTEgMjU0IFEyMjggMjc0IDIzNSAzMjggTDIxOCAzNDkgUTE5NyAzMzEgMTc4IDMwMVoiIGZpbGw9InVybCgjc2tpbikiLz4KPHBhdGggZD0iTTU5IDMyMyBRNTIgMzMzIDU0IDM0NyBRNjcgMzYzIDc4IDM0M1oiIGZpbGw9InVybCgjc2tpbikiLz4KPHBhdGggZD0iTTIxOSAzMjkgUTIxOSAzNDQgMjMwIDM1MCBRMjQzIDM0OCAyMzYgMzI4WiIgZmlsbD0idXJsKCNza2luKSIvPgo8IS0tIHNoaXJ0IC0tPgo8cGF0aCBkPSJNMTA1IDI2MSBMMTgxIDI1NCBRMjA4IDI2NyAyMTAgMjk3IEwyMDAgMzY3IFExNjAgMzg1IDk4IDM2NSBMOTMgMzAzIFE5MyAyODQgMTA1IDI2MVoiIGZpbGw9IiNlZjZmNTAiLz4KPHBhdGggZD0iTTExOSAyNTggUTE1MSAyNzMgMTc0IDI1NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjY2M1OTQ2IiBzdHJva2Utd2lkdGg9IjUiLz4KPCEtLSB2ZXN0IGljb25pYyBibHVlIGRhcmsgbmF2eSAtLT4KPHBhdGggZD0iTTEwMiAyNTQgUTg0IDI1NyA3OSAyOTUgTDg2IDM3MCBMMTE4IDM3NSBMMTI3IDI4NloiIGZpbGw9IiMyZDUxNzkiLz4KPHBhdGggZD0iTTE4MiAyNTEgUTIxNCAyNjYgMjE4IDMxMCBMMjE0IDM3MiBMMTc2IDM3MiBMMTczIDI4NFoiIGZpbGw9IiMzMTVmODgiLz4KPHBhdGggZD0iTTg0IDI5NyBMOTQgMjk1IE0yMDkgMjk0IEwxOTcgMjk2IiBzdHJva2U9IiM2ZTllYWUiIHN0cm9rZS13aWR0aD0iNSIvPgo8IS0tIGhlYWQgLyBlYXJzIC0tPgo8cGF0aCBkPSJNODggMTY4IFE3OSAxNDMgNjcgMTU0IFE1NCAxNjYgNjUgMTg5IFE3NyAyMDYgOTIgMTk0WiIgZmlsbD0idXJsKCNza2luKSIvPgo8cGF0aCBkPSJNMjE0IDE2MCBRMjM5IDE0MSAyNDcgMTY4IFEyNTIgMTk3IDIxOSAyMDdaIiBmaWxsPSJ1cmwoI3NraW4pIi8+CjxwYXRoIGQ9Ik04MyAxMjAgQzk1IDkwIDE3MyA4MSAyMDkgMTEwIFEyMzUgMTMwIDIzNyAxODggUTIzMSAyNDcgMTgwIDI2MSBRMTMxIDI3NyA5MiAyNDcgUTYyIDIyMCA3MiAxNzMgUTcwIDE0MSA4MyAxMjBaIiBmaWxsPSJ1cmwoI3NraW4pIi8+CjwhLS0gZXllYnJvd3MvaGFpciAtLT4KPHBhdGggZD0iTTc4IDEzMyBRODUgMTAxIDExMiAxMTIgUTEzMSAxMDQgMTQ1IDExMCBRMTc1IDkzIDE5NyAxMDYgUTIwOCAxMjEgMjMwIDEzNyBMMjIzIDE1MSBRMjAyIDEzNiAxODMgMTM5IFExNjcgMTM5IDE1MSAxNDkgUTEzNSAxMzAgMTE3IDE0NSBROTEgMTM1IDc4IDE1NVoiIGZpbGw9IiM2ZjQwMmYiLz4KPCEtLSBleWVzLS0+IAo8ZWxsaXBzZSBjeD0iMTI2IiBjeT0iMTc3IiByeD0iMjgiIHJ5PSIzNiIgZmlsbD0iI2ZmZjhlYyIvPgo8ZWxsaXBzZSBjeD0iMTg0IiBjeT0iMTc4IiByeD0iMzAiIHJ5PSIzNyIgZmlsbD0iI2ZmZjhlYyIvPgo8Y2lyY2xlIGN4PSIxNDIiIGN5PSIxODYiIHI9IjciIGZpbGw9IiMyMjFkMjMiIHN0cm9rZT0ibm9uZSIvPgo8Y2lyY2xlIGN4PSIxOTUiIGN5PSIxODgiIHI9IjciIGZpbGw9IiMyMjFkMjMiIHN0cm9rZT0ibm9uZSIvPgo8ZWxsaXBzZSBjeD0iMTU2IiBjeT0iMjAxIiByeD0iMTQiIHJ5PSIxMSIgZmlsbD0idXJsKCNza2luKSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik0xNDUgMjI1IFExNjYgMjM5IDE4NiAyMTkiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iNCIvPgo8cGF0aCBkPSJNOTggMjE2IEwxMTQgMjE5IE0xOTkgMjE3IEwyMTEgMjExIiBmaWxsPSJub25lIiBzdHJva2U9IiNkNzdmNjkiIHN0cm9rZS13aWR0aD0iMyIvPgo8IS0tIHNpZ25hdHVyZSBjYXAgYmx1ZSB3aGl0ZSB3aXRoIHRyZWUgLS0+CjxwYXRoIGQ9Ik03NyAxMTkgUTgwIDQ1IDE1NiA1MCBRMjEzIDU0IDIyNSAxMTUgTDIxNyAxMzcgUTE0MyAxMjMgODAgMTQ1WiIgZmlsbD0iI2Y1ZjVlOSIvPgo8cGF0aCBkPSJNNzYgMTE5IFE3MyA1OCAxMjIgNTMgUTEzMSAxMDAgMTI1IDE0MSBMNzcgMTQ3WiIgZmlsbD0idXJsKCNjYXApIi8+CjxwYXRoIGQ9Ik0xNDUgODcgTDE1OSA2NyBMMTc1IDkxIEwxNjYgOTEgTDE3OSAxMTQgTDE2NyAxMTQgTDE4MSAxMzMgTDE0MSAxMzMgTDE1MSAxMTMgTDE0MCAxMTMgTDE1MiA5MloiIGZpbGw9IiMyMjZhODIiIHN0cm9rZT0ibm9uZSIvPgo8cGF0aCBkPSJNNzYgMTI5IFExNDIgMTA3IDIzMyAxMjEgUTI2MSAxMzAgMjU5IDE0NyBRMjUwIDE1NCAyMzEgMTQ5IFExNjEgMTM5IDc5IDE1NCBRNTggMTUxIDc2IDEyOVoiIGZpbGw9IiM0NDdhYTAiLz4KPC9nPjwvc3ZnPgo=',mabel:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNTEwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9ItCc0Y3QudCx0Lsg0J/QsNC50L3RgSI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0ic2tpbiIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNmZmNlYTciLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNlZDllODEiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0icHVsbG92ZXIiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjYmE4YWMxIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzU1MzhkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxnIHN0cm9rZT0iIzQ5MzAyYyIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2UtbGluZWNhcD0icm91bmQiPgo8IS0tIGxvbmcgaGFpciBiZWhpbmQgLS0+CjxwYXRoIGQ9Ik05NSA5MiBRMTIyIDY2IDE2NyA3MCBRMjM0IDczIDIzOSAxMzcgTDI0MyAzMTkgUTIzMiAzNjcgMjA2IDM3NSBMMTAwIDM2OCBRNjkgMzM2IDcyIDIzNiBMNzAgMTUyIFE3NCAxMDkgOTUgOTJaIiBmaWxsPSIjNzY0MzJjIi8+CjxwYXRoIGQ9Ik05OSAzMDcgUTgwIDM2MiA5NCA0MTEgTTIyMyAzMDkgUTIzOSAzNjYgMjIwIDQwNiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTAzMTIyIiBzdHJva2Utd2lkdGg9IjEyIi8+CjwhLS0gbGVncyBza2lydCAtLT4KPHBhdGggZD0iTTExNSAzOTMgTDEwNyA0NTUgUTExNSA0NjQgMTMxIDQ1OCBMMTQzIDQwMVoiIGZpbGw9InVybCgjc2tpbikiLz4KPHBhdGggZD0iTTE2OSAzOTMgTDE3MCA0NTQgUTE4MyA0NjIgMTk2IDQ1NCBMMTk0IDM5NVoiIGZpbGw9InVybCgjc2tpbikiLz4KPHBhdGggZD0iTTEwMCA0NTQgUTExMyA0NDIgMTM1IDQ1MSBMMTMyIDQ3OSBMODkgNDgxIFE3NCA0NzMgMTAwIDQ1NFoiIGZpbGw9IiNmN2YyZGYiLz4KPHBhdGggZD0iTTE3NCA0NTIgUTE5MSA0NDQgMjAyIDQ1MyBRMjI1IDQ2NyAyMTkgNDc4IEwxNzIgNDgxWiIgZmlsbD0iI2Y3ZjJkZiIvPgo8cGF0aCBkPSJNODggNDY5IEwxMzMgNDcxIE0xNzMgNDY4IEwyMTYgNDcxIiBmaWxsPSJub25lIiBzdHJva2U9IiNiZTRlNGUiIHN0cm9rZS13aWR0aD0iOCIvPgo8cGF0aCBkPSJNMTA4IDM1NSBMMTk5IDM1NCBMMjE2IDQwNyBRMTYxIDQyNCA5NCA0MDZaIiBmaWxsPSIjYjI0YzY0Ii8+CjwhLS0gYXJtcyBvdXRzdHJldGNoZWQgLS0+CjxwYXRoIGQ9Ik0xMDQgMjgxIFE2NiAyNjAgMzIgMjgzIEwzNyAzMDcgUTc3IDMxNyAxMDUgMzI5WiIgZmlsbD0iIzg2NjU5YSIvPgo8cGF0aCBkPSJNMTk5IDI4MiBRMjMxIDI1OCAyNjcgMjc1IEwyNjggMzA1IFEyNDMgMzE3IDIwMyAzMzFaIiBmaWxsPSIjODk2NjliIi8+CjxwYXRoIGQ9Ik0zMSAyODQgUTExIDI3NSA3IDI4MCBRMiAyODUgMjIgMjk0IFE5IDI5NSAxNyAzMDUgTDM2IDMxMFoiIGZpbGw9InVybCgjc2tpbikiLz4KPHBhdGggZD0iTTI2OSAyNzggUTI4NiAyNjQgMjkyIDI3MiBRMjk0IDI3NyAyODEgMjkwIFEyOTUgMjg3IDI5NCAyOTggUTI5MiAzMDYgMjY4IDMwOVoiIGZpbGw9InVybCgjc2tpbikiLz4KPCEtLSBpY29uaWMgc3dlYXRlciAtLT4KPHBhdGggZD0iTTEwOCAyNzIgUTE0NSAyNTkgMTkzIDI3MCBRMjExIDI4NiAyMDkgMzE5IEwyMDggMzY1IFExNjEgMzg2IDk1IDM2NyBMOTMgMzE4IFE5MSAyODcgMTA4IDI3MloiIGZpbGw9InVybCgjcHVsbG92ZXIpIi8+CjxwYXRoIGQ9Ik0xMjAgMjczIFExNTMgMzAwIDE4MyAyNzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzcyNTQ3ZSIgc3Ryb2tlLXdpZHRoPSI1Ii8+CjxwYXRoIGQ9Ik0xNDUgMjk0IEwxNTcgMzE5IEwxODQgMzIyIEwxNjMgMzQwIEwxNzAgMzY0IEwxNDUgMzUwIEwxMjAgMzY0IEwxMjYgMzM5IEwxMDQgMzIyIEwxMzMgMzE3WiIgZmlsbD0iI2Y2ZGU3NyIgc3Ryb2tlPSIjZjBjYTYzIiBzdHJva2Utd2lkdGg9IjMiLz4KPHBhdGggZD0iTTExNyAzNTQgUTE0OSAzNzAgMTkyIDM1NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYzY4NGI1IiBzdHJva2Utd2lkdGg9IjMiLz4KPCEtLSBlYXJzLCBoZWFkIC0tPgo8cGF0aCBkPSJNODggMTcxIFE2MSAxNTkgNjcgMTg3IFE3MiAyMTEgOTQgMjA3WiIgZmlsbD0idXJsKCNza2luKSIvPgo8cGF0aCBkPSJNMjE2IDE2OCBRMjQ0IDE1NiAyNDIgMTg0IFEyNDIgMjA0IDIxOCAyMDhaIiBmaWxsPSJ1cmwoI3NraW4pIi8+CjxwYXRoIGQ9Ik05MSAxMTMgUTEzNSA4MyAxOTUgMTEwIFEyMzIgMTM3IDIzMCAxOTMgUTIyOCAyNTEgMTc0IDI2OSBRMTI0IDI3OCA5MSAyNDIgUTY0IDIxNyA3OCAxNjIgUTc4IDEyOCA5MSAxMTNaIiBmaWxsPSJ1cmwoI3NraW4pIi8+CjwhLS0gaGFpciBzaGFwZSBmcmFtaW5nIGZhY2UgLS0+CjxwYXRoIGQ9Ik03NCAxODMgUTY1IDEyOCA4OSAxMDMgUTExOCA3OCAxODEgOTMgUTIyNCAxMDIgMjI4IDE2NyBRMjA0IDE0OCAxOTUgMTI4IFExNjUgMTUxIDEzNiAxNDUgUTExMSAxNjggNzggMTYwWiIgZmlsbD0iIzc2NDMyYyIvPgo8cGF0aCBkPSJNNzggMTU5IFE4MCAyMzggOTIgMjY5IEw4MCAzMjYgUTYxIDI5OCA2NCAyMjlaIiBmaWxsPSIjNzY0MzJjIi8+CjxwYXRoIGQ9Ik0yMjQgMTUwIFEyMjQgMjQ0IDIxMSAyNzYgTDIyOSAzMjEgUTI1MCAyNTQgMjQyIDE4NVoiIGZpbGw9IiM3NjQzMmMiLz4KPCEtLSBwaW5rIGhlYWRiYW5kIC0tPgo8cGF0aCBkPSJNOTIgMTAzIFExNTUgNjMgMjE2IDExOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDM0YzczIiBzdHJva2Utd2lkdGg9IjE1Ii8+CjwhLS0gbGFyZ2UgZXllcyAtLT4KPGVsbGlwc2UgY3g9IjEyNiIgY3k9IjE4NCIgcng9IjMwIiByeT0iMzUiIGZpbGw9IiNmZmZhZjIiLz4KPGVsbGlwc2UgY3g9IjE4NyIgY3k9IjE4MiIgcng9IjI5IiByeT0iMzUiIGZpbGw9IiNmZmZhZjIiLz4KPGNpcmNsZSBjeD0iMTQyIiBjeT0iMTkwIiByPSI4IiBmaWxsPSIjMjAxYjI1IiBzdHJva2U9Im5vbmUiLz4KPGNpcmNsZSBjeD0iMTc5IiBjeT0iMTkwIiByPSI4IiBmaWxsPSIjMjAxYjI1IiBzdHJva2U9Im5vbmUiLz4KPGVsbGlwc2UgY3g9IjE2MCIgY3k9IjIwMiIgcng9IjEyIiByeT0iMTAiIGZpbGw9InVybCgjc2tpbikiIHN0cm9rZS13aWR0aD0iNCIvPgo8IS0tIGhhcHB5IGJyYWNlcyBzbWlsZSAtLT4KPHBhdGggZD0iTTEyMyAyMjAgUTE1OSAyNjIgMTk0IDIyMSBRMTYyIDIzNCAxMjMgMjIwWiIgZmlsbD0iIzVlMzA0NiIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik0xMzUgMjI5IFExNjIgMjQwIDE4MiAyMjkgTDE3OCAyMzcgUTE1NiAyNDcgMTM4IDIzNloiIGZpbGw9IiNmZmY4ZjAiIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNMTM0IDIzMiBMMTgyIDIzMiBNMTQ5IDIzMCBMMTQ5IDI0MSBNMTY4IDIzMSBMMTY4IDI0MiIgc3Ryb2tlPSIjOWZiOGM0IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPGNpcmNsZSBjeD0iMTA1IiBjeT0iMjE2IiByPSIxMSIgZmlsbD0iI2Y2YTE5YyIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIuNjUiLz4KPGNpcmNsZSBjeD0iMjA4IiBjeT0iMjE2IiByPSIxMSIgZmlsbD0iI2Y2YTE5YyIgc3Ryb2tlPSJub25lIiBvcGFjaXR5PSIuNjUiLz4KPC9nPjwvc3ZnPgo=',bill:'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzgwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9ItCR0LjQu9C7INCo0LjRhNGAIj4KPGcgc3Ryb2tlPSIjMWExODI5IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xMDggMjU4IFE2MiAyNzYgNTEgMzI2IE0xOTAgMjYxIFEyMzkgMjg4IDI0NSAzMjUiIHN0cm9rZS13aWR0aD0iOSIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik01MyAzMjYgTDMxIDMyOCBNNTMgMzI2IEw0OSAzNDggTTI0NSAzMjUgTDI2NiAzMzEgTTI0NSAzMjUgTDI0OCAzNTAiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iNyIvPgo8cGF0aCBkPSJNOTAgMTQxIEw0MiAxNTQgTDE5IDEzNiBNMjE4IDEzOSBMMjU5IDE1NCBMMjgwIDE0MiIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSI4Ii8+PHBhdGggZD0iTTE5IDEzNiBMMTUgMTE1IE0xOSAxMzYgTDcgMTQzIE0yODAgMTQyIEwyOTAgMTIyIE0yODAgMTQyIEwyOTAgMTUxIiBzdHJva2Utd2lkdGg9IjciIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTE0OSA1NCBMMjc4IDI4NiBMMjAgMjg2WiIgZmlsbD0iI2Y1Y2Q1NSIgc3Ryb2tlLXdpZHRoPSI5Ii8+PHBhdGggZD0iTTE0OSA3NSBMMjU2IDI2OSBMNDIgMjY5WiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZGFhODQ4IiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNMTE2IDUyIEwxODEgNTIgTTEzMCAxNSBMMTY4IDE1IEwxNzUgNTEgTDEyMyA1MVoiIGZpbGw9IiMxNDE2MjciIHN0cm9rZS13aWR0aD0iNiIvPgo8ZWxsaXBzZSBjeD0iMTUxIiBjeT0iMTc1IiByeD0iNTUiIHJ5PSIzNSIgZmlsbD0iI2ZmZjllOCIgc3Ryb2tlLXdpZHRoPSI2Ii8+PGVsbGlwc2UgY3g9IjE1MSIgY3k9IjE3NiIgcng9IjE1IiByeT0iMzEiIGZpbGw9IiMyOTIxM2EiIHN0cm9rZS13aWR0aD0iMyIvPjxwYXRoIGQ9Ik0xMDkgMjIzIFExNDkgMjQxIDE5NSAyMjEiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iNSIvPjxwYXRoIGQ9Ik0xMzUgMjQzIEwxNTEgMjUwIEwxMzUgMjYyWiBNMTY4IDI0MyBMMTUxIDI1MCBMMTY4IDI2MloiIGZpbGw9IiMxYTE4MjkiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik0xNTEgMjUzIEwxNTEgMjY4IiBzdHJva2Utd2lkdGg9IjQiLz48L2c+Cjwvc3ZnPgo='};
+let mansionLock={scanned:false,opened:false},hintCooldown=0, puzzleShowTimer=null;
+let w=390,h=840,dpr=1,ground=610,cam=0,now=0,dt=0,mode='menu',level=0,player,clues=[],foes=[],hazards=[],bubbles=[],particles=[],dialogAfter=null,overlayNext=null,joyX=0,touchStickId=null,autoTarget=null,life=3,lastHit=0,abilityCooldown=0,shotFX=[],sceneSeed=17,worldSpeed=186,activePuzzle=null,puzzleStep=0,toastTimer=null,saveKey='gravity-falls-mobile-story-v3';
+const rnd=(n)=>{let v=Math.sin(n*127.1+sceneSeed*13.3)*43758.5453;return v-Math.floor(v)};
+const clamp=(a,b,c)=>Math.max(b,Math.min(c,a));
+function save(){try{localStorage.setItem(saveKey,String(level))}catch(e){}}
+function saved(){try{return clamp(Number(localStorage.getItem(saveKey))||0,0,4)}catch(e){return 0}}
+function vibrate(x=15){if(navigator.vibrate)navigator.vibrate(x)}
+let ac=null,audioOn=false;
+function note(freq=440,dur=.09,type='sine',vol=.03){if(!audioOn)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();let o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+dur)}catch(e){}}
+function resize(){const bounds=$('#game').getBoundingClientRect();w=Math.max(280,bounds.width);h=Math.max(360,bounds.height);dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);ground=h-(h<700?142:204);if(player)player.y=Math.min(player.y,ground);}
+window.addEventListener('resize',resize);window.addEventListener('orientationchange',()=>setTimeout(resize,180));if('ResizeObserver' in window)new ResizeObserver(resize).observe($('#game'));resize();
+function showToast(msg){ui.toast.textContent=msg;ui.toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>ui.toast.classList.remove('show'),1900)}
+function showScreen(x){for(const n of ['menu','dialog','end','pause','puzzle'])ui[n].classList.toggle('show',n===x);ui.controls.classList.toggle('show',x===null&&mode==='playing');ui.header.classList.toggle('show',x===null&&mode==='playing');ui.progress.classList.toggle('show',x===null&&mode==='playing');}
+function story(k,title,body,btn,next,hero){mode='dialog';showScreen('dialog');$('#storyKicker').textContent=k;$('#storyTitle').textContent=title;$('#storyText').textContent=body;$('#storyGo').textContent=btn||'Продолжить →';$('#storyPortrait').src=img[hero||'dipper'].src;dialogAfter=next;releaseJoy();}
+$('#storyGo').addEventListener('click',()=>{vibrate();if(dialogAfter){const cb=dialogAfter;dialogAfter=null;cb()} });
+function setupLevel(i){level=i;sceneSeed=17+i*53;const L=LEVELS[level];cam=0;player={x:70,y:ground,vy:0,onGround:true,face:1,person:'dipper',walk:0,hit:0};life=3;lastHit=-100;hintCooldown=0;mansionLock={scanned:false,opened:false};autoTarget=null;joyX=0;abilityCooldown=0;clues=L.items.map((x,j)=>({x,id:j,got:false,revealed:level!==0||j!==0,y:0}));foes=L.enemies.map((x,j)=>({x,base:x,dir:j%2?-1:1,stun:0,t:j*2.1}));hazards=L.hazards.map(x=>({x}));particles=[];bubbles=[];shotFX=[];mode='dialog';updateHUD();save();
+story(`ДЕЛО № 0${i+1}`,L.name,L.intro.join('\n\n'),'Исследовать →',()=>{mode='playing';showScreen(null);showToast(level===0?'Двигай джойстик. Касайся кнопок «Свет» и «Прыжок».':'Двигай джойстик или коснись дорожки');},i===1?'mabel':'dipper');}
+function start(){setupLevel(saved())}
+function resume(){mode='playing';showScreen(null);}
+function updateHUD(){ui.chapter.textContent='0'+(level+1);ui.stageName.textContent=['Хижина','Лес','Озеро','Бункер','Разлом'][level];ui.count.textContent=clues.filter(x=>x.got).length+'/3';ui.hearts.textContent='♥'.repeat(life)+'♡'.repeat(3-life);ui.progressFill.style.width=player?Math.min(100,100*player.x/LEVELS[level].world)+'%':'0%';let near=nearestItem();ui.useName.textContent=near?'ВЗЯТЬ':level===4?'ЗНАК':player?.person==='mabel'?'ЗВЕЗДА':'СВЕТ';}
 
-const sprites={};
-// Always show a bundled detailed fallback immediately, even without any internet.
-for(const [key,url] of Object.entries(ART)){
- const fallback=new Image();fallback.decoding='async';fallback.src=FALLBACK[key];sprites[key]=fallback;
- const remote=new Image();remote.decoding='async';
- remote.onload=()=>{
-   sprites[key]=remote;
-   document.querySelectorAll(`[data-character="${key}"]`).forEach(node=>{
-     if(node.src!==url)node.src=url;
-   });
- };
- remote.onerror=()=>{}; // Stay with offline artwork if third-party assets are unavailable.
- remote.src=url;
+function updateStartButton(){const s=saved();$('#startButton').textContent=s>0?'Продолжить: дело 0'+(s+1)+' →':'Начать расследование →';$('#newGameButton').style.display=s>0?'block':'none'}
+const codeIcons=['▲','✦','☾','◈','✳','◉'];
+function openPuzzle(item){
+ mode='puzzle';activePuzzle=item;puzzleStep=0;releaseJoy();
+ clearTimeout(puzzleShowTimer);
+ const name=['Шифр дневника','Тайные руны','Зеркальный код','Схема Форда','Знак Билла'][level];
+ $('#puzzleHead').textContent=name;
+ const base=(item.id*2+level)%6;
+ item.sequence=[codeIcons[base],codeIcons[(base+2)%6],codeIcons[(base+4)%6]];
+ // All six glyphs are shown. The required three-symbol code is only flashed briefly.
+ const choices=[...codeIcons].sort((a,b)=>rnd(codeIcons.indexOf(a)+item.id*7)-rnd(codeIcons.indexOf(b)+item.id*7));
+ const seq=$('#puzzleSequence');seq.textContent=item.sequence.join('   ');
+ $('#puzzleHint').textContent='Запомни 3 знака! Через 3 секунды они исчезнут. Затем нажми их по порядку.';
+ $('#puzzleStatus').textContent='Запоминай…';$('#puzzleButtons').innerHTML='';
+ for(const s of choices){const btn=document.createElement('button');btn.className='glyphButton';btn.textContent=s;btn.disabled=true;btn.setAttribute('aria-label','Знак '+s);btn.addEventListener('click',()=>puzzlePress(s));$('#puzzleButtons').appendChild(btn)}
+ showScreen('puzzle');
+ puzzleShowTimer=setTimeout(()=>{
+  if(mode!=='puzzle'||activePuzzle!==item)return;
+  seq.textContent='?    ?    ?';
+  $('#puzzleHint').textContent='Выбери три знака по памяти. Если ошибёшься, подсказка появится снова.';
+  $('#puzzleStatus').textContent='Нажми первый знак';
+  $('#puzzleButtons').querySelectorAll('button').forEach(b=>b.disabled=false);
+ },2800);
 }
-document.querySelectorAll('[data-character]').forEach(node=>{
- const key=node.dataset.character;
- node.addEventListener('error',()=>{
-   if(node.src!==FALLBACK[node.dataset.character])node.src=FALLBACK[node.dataset.character];
- });
- if(key in FALLBACK)node.src=FALLBACK[key];
-});
-function resizeGame(){
- const stage=$('stage'), b=stage.getBoundingClientRect();
- if(b.width<1 || b.height<1)return;
- // Dynamic visible world rather than fixed 960x540; no letterboxing on iPhone.
- W=window.matchMedia('(pointer:coarse)').matches ? (b.width>b.height? 1060: 570): 1060;
- H=W*b.height/b.width;
- const dpr=Math.min(window.devicePixelRatio||1,2);
- c.width=Math.max(1,Math.round(b.width*dpr)); c.height=Math.max(1,Math.round(b.height*dpr));
- ctx.setTransform(c.width/W,0,0,c.height/H,0,0);
+function puzzlePress(symbol){
+ if(mode!=='puzzle'||$('#puzzleButtons button')?.disabled)return;
+ const item=activePuzzle;
+ if(symbol!==item.sequence[puzzleStep]){
+  puzzleStep=0;$('#puzzleStatus').textContent='Не тот знак. Смотри ещё раз!';
+  $('#puzzleSequence').textContent=item.sequence.join('   ');
+  $('#puzzleButtons').querySelectorAll('button').forEach(b=>b.disabled=true);
+  clearTimeout(puzzleShowTimer);
+  puzzleShowTimer=setTimeout(()=>{
+    if(mode!=='puzzle')return;
+    $('#puzzleSequence').textContent='?    ?    ?';
+    $('#puzzleStatus').textContent='Попробуй ещё раз';
+    $('#puzzleButtons').querySelectorAll('button').forEach(b=>b.disabled=false);
+  },1700);
+  note(170,.12,'sawtooth');vibrate(35);return;
+ }
+ puzzleStep++;$('#puzzleStatus').textContent=puzzleStep<3?`Верно! ${puzzleStep} / 3`:'Секрет раскрыт!';
+ note(500+puzzleStep*140,.13,'triangle');vibrate(8);
+ if(puzzleStep===3){item.got=true;spawn(item.x,ground-105,LEVELS[level].color,27);
+  setTimeout(()=>{if(mode!=='puzzle')return;mode='playing';activePuzzle=null;showScreen(null);updateHUD();
+   showToast(`Улика найдена: ${clues.filter(x=>x.got).length} из 3`);
+   if(clues.every(x=>x.got))setTimeout(()=>showToast('Теперь найди выход →'),1800);
+  },430);
+ }
 }
-window.addEventListener('resize',resizeGame,{passive:true});
-window.visualViewport?.addEventListener('resize',resizeGame,{passive:true});
-new ResizeObserver(resizeGame).observe($('stage'));
 
-function rr(x,y,w,h,r=6){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
-function rect(x,y,w,h,col){ctx.fillStyle=col;ctx.fillRect(x,y,w,h)}
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-function seeded(a){return (Math.sin(a*127.1+lv*311.7)*43758.5453)%1}
-function rand(a){return Math.abs(seeded(a))}
-function initLevel(i){lv=i;hero=0;player={x:2*T+24,y:9*T+24,r:15};hearts=4;lvElapsed=0;abilityCooldown=0;invulnerable=0;collected=0;stars=[];particles=[];toast='';boss={x:39*T+24,y:9*T+24,hp:3,exposed:0,active:false,hitCd:0};
-const st=stories[lv];world={walls:[],decor:[]};barriers=[];
-for(let x=0;x<WW;x++){world.walls.push({x:x*T,y:0,w:T,h:T});world.walls.push({x:x*T,y:(WH-1)*T,w:T,h:T})}
-for(let y=1;y<WH-1;y++){world.walls.push({x:0,y:y*T,w:T,h:T});world.walls.push({x:(WW-1)*T,y:y*T,w:T,h:T})}
-[9,18,27,35].forEach((bx,j)=>{let [a,b]=st.gaps[j];for(let y=1;y<WH-1;y++)if(y<a||y>b)world.walls.push({x:bx*T,y:y*T,w:T,h:T});barriers.push({x:bx*T,a,b})});
-for(let j=0;j<115;j++){let x=1+Math.floor(rand(j+77)*(WW-2)),y=1+Math.floor(rand(j+400)*(WH-2));if(!world.walls.some(w=>x*T>=w.x&&x*T<w.x+w.w&&y*T>=w.y&&y*T<w.y+w.h))world.decor.push({x:x*T+T/2,y:y*T+T/2,k:rand(j+9)})}
-items=[{x:6*T+24,y:3*T+24,got:false},{x:21*T+24,y:13*T+24,got:false},{x:31*T+24,y:5*T+24,got:false}];
-rune={x:15*T+24,y:6*T+24,revealed:false,done:false};switcher={x:24*T+24,y:12*T+24,done:false};door={x:41*T+24,y:9*T+24};
-const es=[[5,11],[13,4],[15,13],[22,8],[30,13],[33,5],[39,12]];enemies=es.slice(0,lv+3).map(([x,y],n)=>({x:x*T+24,y:y*T+24,homeX:x*T+24,homeY:y*T+24,phase:n*1.75,stun:0,speed:55+lv*11+(n%2)*12}));
-hazards=lv>=2?[[12,9],[16,5],[23,13],[29,4],[37,6]].slice(0,lv+1).map(([x,y])=>({x:x*T+24,y:y*T+24})):[];
-updateHUD();}
-function updateHUD(){const st=stories[lv];$('levelLabel').textContent=`${lv+1} / 5`;$('hearts').textContent='♥ '.repeat(hearts).trim()||'♡';$('heroLabel').textContent=hero===0?'Диппер':'Мэйбл';$('abilityLabel').textContent=hero===0?'Фонарик':'Звезда';const key=hero===0?'dipper':'mabel';const portrait=$('heroPortrait');const source=sprites[key].src;if(portrait.src!==source){portrait.src=source;portrait.dataset.character=key;}$('clock').textContent=String(Math.floor(lvElapsed/60)).padStart(2,'0')+':'+String(Math.floor(lvElapsed%60)).padStart(2,'0');quest.textContent=lv===4&&boss.active?`Билл: ${'▲'.repeat(boss.hp)}${'△'.repeat(3-boss.hp)} · свет → звезда`:`${st.collect} ${collected}/3  ·  🔎 ${rune.done?'✓':'?'}  ·  🌟 ${switcher.done?'✓':'?'}`}
-function showOverlay(tag,title,body,button,emoji='🧢 📓 🌲'){$('overlayTag').textContent=tag;$('overlayTitle').textContent=title;$('overlayText').textContent=body;$('startBtn').textContent=button;$('overlayEmoji').textContent=emoji;overlay.classList.remove('hide')}
-function start(){if(state==='intro'){initLevel(0);state='playing';overlay.classList.add('hide');say('Диппер: Где-то здесь спрятаны три обрывка…',4)}else if(state==='brief'){state='playing';overlay.classList.add('hide');say('Ищи предметы, руну и розовый переключатель!',4)}else if(state==='clear'){if(lv===4){state='win';showOverlay('Гравити Фолз спасён!','Секрет раскрыт','Диппер захлопнул дневник, а Мэйбл нарисовала на последней странице улыбающуюся звезду. Пятая страница исчезла. По крайней мере, до следующего лета…','Играть заново','🎉 🌈 📓');return}initLevel(lv+1);state='brief';showOverlay(`Эпизод ${lv+1} из 5`,stories[lv].title,stories[lv].desc,'Вперёд! →',lv===4?'🔺 👁️ 🌈':'🧢 🌲 🌈')}else if(state==='win'){initLevel(0);state='playing';overlay.classList.add('hide')}else if(state==='paused'){resume()}}
-$('startBtn').onclick=start;
-function pause(){if(state==='playing'){state='paused';showOverlay('Пауза',stories[lv].title,'Расследование подождёт. Переключай героев и используй их способности: фонарик Диппера и сияющую звезду Мэйбл.','Продолжить ▶','⏸️ 📓')}else if(state==='paused')resume()}
-function resume(){state='playing';overlay.classList.add('hide')}
-$('pauseBtn').onclick=pause;
-function say(s,t=3){toast=s;toastTimer=t}
-function collide(px,py,r=player.r){return world.walls.some(w=>px+r>w.x&&px-r<w.x+w.w&&py+r>w.y&&py-r<w.y+w.h)}
-function interact(){if(state!=='playing')return;let target=items.find(i=>!i.got&&dist(player,i)<73);if(target){target.got=true;collected++;burst(target.x,target.y,'#ffe2a0');say(`${stories[lv].collect} Найдено: ${collected} из 3`,2);updateHUD();return}
-if(dist(player,rune)<80){if(hero!==0){say('Этот знак умеет читать только Диппер!',2);return}if(!rune.revealed){say('Сначала направь фонарик Диппера на символ (Пробел).',3);return}rune.done=true;burst(rune.x,rune.y,'#93f4dd');say('Диппер разгадал зашифрованную руну!',3);updateHUD();return}
-if(dist(player,switcher)<80){if(hero!==1){say('Этот переключатель любит только яркие вещи Мэйбл.',2);return}if(!switcher.done){say('Попади в переключатель сияющей звездой (Пробел).',3)}return}
-if(dist(player,door)<100){if(collected<3||!rune.done||!switcher.done){say('Дверь закрыта! Найди 3 предмета и активируй оба знака.',3);return}if(lv===4){if(!boss.active){boss.active=true;say('Билл: А теперь попробуй победить МЕНЯ! 👁',4)}else say('Билл ещё здесь! Освети его, затем попади звездой.',3)}else complete();return}say('Подойди к предмету и нажми E / «Взять».',2)}
-function complete(){state='clear';showOverlay(`Эпизод ${lv+1} пройден`,stories[lv].title,lv===4?'Разлом исчез. Ничего не подозревающий Стэн уже продаёт билеты на «место битвы с демоном».':`Улики собраны, но загадочная пятая страница всё ещё зовёт дальше. ${stories[lv].sub}`,lv===4?'Финал →':'Следующий эпизод →','✨ 📓 ✨')}
-function switchHero(){if(state!=='playing')return;hero=1-hero;say(hero===0?'Диппер: фонарик открывает тайные знаки.':'Мэйбл: моя сияющая звезда всё исправит!',2);updateHUD()}
-function ability(){if(state!=='playing'||abilityCooldown>0)return;abilityCooldown=hero===0?1.1:.58;if(hero===0){flash=.55;if(dist(player,rune)<185){rune.revealed=true;say('Секретная руна проявилась! Подойди и нажми E.',2.8)}for(let e of enemies)if(dist(player,e)<115)e.stun=2.1;if(lv===4&&boss.active&&dist(player,boss)<250){boss.exposed=4;say('Билл уязвим! Переключайся на Мэйбл!',2)}}else{let target={x:player.x+facing.x*260,y:player.y+facing.y*260};stars.push({x:player.x,y:player.y,vx:facing.x*480,vy:facing.y*480,life:.75,angle:0});say('Мэйбл: БЛЁСТКИ — МОЯ СУПЕРСИЛА!',1)}}
-let facing={x:1,y:0};
-function burst(x,y,color){for(let j=0;j<15;j++){let a=j*Math.PI*2/15,s=55+rand(j+elapsed)*90;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,t:.7,color})}}
-function damage(){if(invulnerable>0)return;hearts--;invulnerable=1.8;burst(player.x,player.y,'#ff829b');say('Ой! Осторожнее с аномалиями!',2);if(hearts<=0){hearts=4;player.x=2*T+24;player.y=9*T+24;enemies.forEach(e=>{e.x=e.homeX;e.y=e.homeY});say('Мэйбл: Не сдавайся! Возвращаемся к началу комнаты.',4)}updateHUD()}
-function update(dt){if(state!=='playing')return;elapsed+=dt;lvElapsed+=dt;abilityCooldown=Math.max(0,abilityCooldown-dt);invulnerable=Math.max(0,invulnerable-dt);flash=Math.max(0,flash-dt);toastTimer=Math.max(0,toastTimer-dt);boss.exposed=Math.max(0,boss.exposed-dt);boss.hitCd=Math.max(0,boss.hitCd-dt);
-let dx=Number(input.right)-Number(input.left),dy=Number(input.down)-Number(input.up);if(dx||dy){let k=Math.hypot(dx,dy);dx/=k;dy/=k;facing={x:dx,y:dy};let speed=205*dt;if(!collide(player.x+dx*speed,player.y))player.x+=dx*speed;if(!collide(player.x,player.y+dy*speed))player.y+=dy*speed}
-for(let e of enemies){e.stun=Math.max(0,e.stun-dt);if(e.stun)continue;let d=dist(player,e),tx,ty;if(d<245){tx=player.x;ty=player.y}else{e.phase+=dt*.8;tx=e.homeX+Math.cos(e.phase)*88;ty=e.homeY+Math.sin(e.phase*.6)*95}let ex=tx-e.x,ey=ty-e.y,l=Math.hypot(ex,ey)||1;let step=e.speed*dt;if(!collide(e.x+ex/l*step,e.y,17))e.x+=ex/l*step;if(!collide(e.x,e.y+ey/l*step,17))e.y+=ey/l*step;if(dist(player,e)<32)damage()}
-for(let h of hazards)if(dist(player,h)<31)damage();if(lv===4&&boss.active){if(dist(player,boss)<48)damage()}
-for(let s of stars){s.x+=s.vx*dt;s.y+=s.vy*dt;s.life-=dt;s.angle+=dt*12;if(collide(s.x,s.y,8))s.life=0;if(!switcher.done&&dist(s,switcher)<43){switcher.done=true;s.life=0;burst(switcher.x,switcher.y,'#ff8cc6');say('Розовый механизм заработал!',2.4);updateHUD()}for(let e of enemies){if(dist(s,e)<39){e.stun=3.4;s.life=0;burst(e.x,e.y,'#ffb4e0')}}if(lv===4&&boss.active&&dist(s,boss)<61){s.life=0;if(boss.exposed>0&&boss.hitCd===0){boss.hp--;boss.hitCd=1;boss.exposed=0;burst(boss.x,boss.y,'#ffe277');say(boss.hp>0?`Билл потерял силу! Осталось попаданий: ${boss.hp}`:'Билл: НЕЕЕЕТ! ОПЯТЬ?!',3);if(boss.hp<=0){complete();return}}else say('Билл защищён! Сначала освети его Диппером.',2)}}stars=stars.filter(s=>s.life>0);
-for(let p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.t-=dt}particles=particles.filter(p=>p.t>0);
-updateHUD()}
-function star(x,y,r,points=5){ctx.beginPath();for(let i=0;i<points*2;i++){let a=-Math.PI/2+i*Math.PI/points,rad=i%2?r*.45:r;ctx.lineTo(x+Math.cos(a)*rad,y+Math.sin(a)*rad)}ctx.closePath()}
-function drawGnome(x,y,t){ctx.save();ctx.translate(x,y);ctx.fillStyle='#4e5655';ctx.beginPath();ctx.ellipse(0,11,17,13,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffc6a8';ctx.beginPath();ctx.arc(0,-1,13,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e5485c';ctx.beginPath();ctx.moveTo(-15,-10);ctx.lineTo(1,-38);ctx.lineTo(15,-9);ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(-7,0,5,5);ctx.fillRect(5,0,5,5);ctx.fillStyle='#18232c';ctx.fillRect(-5,1,2,3);ctx.fillRect(7,1,2,3);ctx.restore()}
-function drawGhost(x,y,t){ctx.save();ctx.translate(x,y+Math.sin(t*3+x)*4);ctx.fillStyle='#8edaf1aa';ctx.beginPath();ctx.moveTo(-18,18);ctx.lineTo(-18,-4);ctx.quadraticCurveTo(-18,-23,0,-23);ctx.quadraticCurveTo(18,-23,18,-4);ctx.lineTo(18,19);ctx.lineTo(10,12);ctx.lineTo(2,19);ctx.lineTo(-8,12);ctx.closePath();ctx.fill();ctx.fillStyle='#203d59';ctx.beginPath();ctx.arc(-6,-4,3.5,0,7);ctx.arc(7,-4,3.5,0,7);ctx.fill();ctx.restore()}
-function drawBot(x,y,t){ctx.save();ctx.translate(x,y);ctx.fillStyle='#637c8a';rr(-18,-20,36,37,6);ctx.fill();ctx.fillStyle='#9cb4b6';rr(-15,-16,30,18,4);ctx.fill();ctx.fillStyle='#f76b77';ctx.fillRect(-9,-10,6,6);ctx.fillRect(5,-10,6,6);ctx.fillStyle='#293b44';ctx.fillRect(-12,17,7,7);ctx.fillRect(5,17,7,7);ctx.restore()}
-function drawHero(x,y,isMabel,t){
- const img=sprites[isMabel?'mabel':'dipper'];
- if(img && img.complete && img.naturalWidth>0){
-   ctx.save();ctx.translate(x,y+Math.sin(t*9)*1.6);
-   ctx.fillStyle='#0b162777';ctx.beginPath();ctx.ellipse(0,21,24,7,0,0,Math.PI*2);ctx.fill();
-   const h=96, w=Math.min(100,h*img.naturalWidth/img.naturalHeight);
-   // Feet stay at the collision point. The art itself is not stretched.
-   if(facing.x < -0.3){ctx.scale(-1,1)}
-   ctx.drawImage(img,-w/2,21-h,w,h);ctx.restore();return;
- }
- ctx.save();ctx.translate(x,y+Math.sin(t*9)*1.3);ctx.fillStyle='#12202a55';ctx.beginPath();ctx.ellipse(0,19,20,7,0,0,7);ctx.fill();ctx.fillStyle='#222735';ctx.fillRect(-13,14,10,11);ctx.fillRect(4,14,10,11);
-ctx.fillStyle=isMabel?'#ed7b9d':'#e65d55';rr(-17,-6,34,26,7);ctx.fill();ctx.fillStyle=isMabel?'#ffdb73':'#1d536d';ctx.fillRect(-12,3,24,5);ctx.fillStyle='#efb28c';ctx.beginPath();ctx.arc(0,-15,16,0,Math.PI*2);ctx.fill();ctx.fillStyle='#52342e';ctx.beginPath();ctx.ellipse(0,-23,16,10,0,Math.PI,Math.PI*2);ctx.fill();if(isMabel){ctx.fillStyle='#8d422a';ctx.fillRect(-15,-20,5,28);ctx.fillRect(11,-20,5,28);ctx.fillStyle='#fa88ac';ctx.beginPath();ctx.moveTo(-18,-28);ctx.quadraticCurveTo(0,-37,18,-28);ctx.lineTo(16,-22);ctx.lineTo(-16,-22);ctx.fill();ctx.fillStyle='#ffe387';star(0,5,7);ctx.fill()}else{ctx.fillStyle='#f1f3e8';ctx.beginPath();ctx.moveTo(-18,-27);ctx.quadraticCurveTo(0,-46,17,-28);ctx.lineTo(17,-23);ctx.lineTo(-18,-23);ctx.fill();ctx.fillStyle='#3867a2';ctx.fillRect(-18,-25,36,7);ctx.fillStyle='#376d59';star(0,-31,6);ctx.fill();ctx.fillStyle='#fff';ctx.fillRect(-22,-24,19,5)}ctx.fillStyle='#25313a';ctx.beginPath();ctx.arc(-5,-14,2,0,7);ctx.arc(6,-14,2,0,7);ctx.fill();ctx.strokeStyle='#71453b';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(1,-10,3,.2,2.8);ctx.stroke();ctx.restore()}
-function drawBill(x,y,t){
- const img=sprites.bill;
- if(img && img.complete && img.naturalWidth>0){
- ctx.save();ctx.translate(x,y+Math.sin(t*2)*6);
- if(boss.exposed>0){ctx.shadowColor='#f5cf80';ctx.shadowBlur=40}
- const h=118,w=Math.min(150,h*img.naturalWidth/img.naturalHeight);
- ctx.drawImage(img,-w/2,-h/2,w,h);ctx.restore();return;
- }
- ctx.save();ctx.translate(x,y+Math.sin(t*2)*6);if(boss.exposed>0){ctx.shadowColor='#fbec94';ctx.shadowBlur=35}ctx.fillStyle='#e4bb50';ctx.strokeStyle='#241d33';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(0,-45);ctx.lineTo(44,35);ctx.lineTo(-44,35);ctx.closePath();ctx.fill();ctx.stroke();ctx.fillStyle='#111e2b';ctx.fillRect(-21,-47,42,7);ctx.fillRect(-12,-59,24,15);ctx.fillStyle='#fff8d7';ctx.beginPath();ctx.ellipse(0,1,17,14,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#1b2736';ctx.beginPath();ctx.ellipse(0,1,6,11,0,0,7);ctx.fill();ctx.strokeStyle='#1b2736';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,17);ctx.lineTo(0,28);ctx.moveTo(-8,20);ctx.lineTo(8,20);ctx.stroke();ctx.restore()}
-// Art direction: location-specific scenery, replacing the identical square-room tiles.
-function sceneFloor(x,y){
- const n=rand(x*5+y*41), px=x*T,py=y*T;
- if(lv===0){ // planks and subtle warm timber grain in the Mystery Shack
-   rect(px,py,T,T,(x+y)%2?'#98613d23':'#cf956426');
-   ctx.strokeStyle='#d59a5d27';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(px,py+T/2);ctx.lineTo(px+T,py+T/2);ctx.moveTo(px+T-1,py);ctx.lineTo(px+T-1,py+T);ctx.stroke();
-   if(n>.83){ctx.strokeStyle='#572d2855';ctx.beginPath();ctx.moveTo(px+11,py+13);ctx.quadraticCurveTo(px+32,py+9,px+40,py+13);ctx.stroke()}
- }else if(lv===1){ // lush uneven grass and ferns
-   rect(px,py,T,T,n>.58?'#6184591b':'#0d1c1922');
-   if(n>.38){ctx.strokeStyle=n>.75?'#8aaa7585':'#456e517d';ctx.lineWidth=2;ctx.beginPath();let cx=px+12+n*21,cy=py+19+n*16;ctx.moveTo(cx,cy+8);ctx.lineTo(cx-4,cy-6);ctx.moveTo(cx,cy+8);ctx.lineTo(cx+5,cy-3);ctx.moveTo(cx,cy+8);ctx.lineTo(cx,cy-9);ctx.stroke()}
- }else if(lv===2){ // cool shore / lake with animated lines
-   rect(px,py,T,T,n>.55?'#67b3a41d':'#1d455d28');
-   if(n>.46){ctx.strokeStyle='#8cd5d454';ctx.lineWidth=1.5;ctx.beginPath();let cx=px+8+n*7,cy=py+8+n*29;ctx.moveTo(cx,cy);ctx.quadraticCurveTo(cx+9,cy-4,cx+19,cy);ctx.moveTo(cx+4,cy+8);ctx.lineTo(cx+14,cy+8);ctx.stroke()}
- }else if(lv===3){ // brushed metal floor panels and bolts
-   rect(px,py,T,T,n>.45?'#7e8e9420':'#18253624');
-   ctx.strokeStyle='#d3d5c820';ctx.lineWidth=1;ctx.strokeRect(px+2,py+2,T-4,T-4);
-   if(n>.7){ctx.fillStyle='#bdc8bd50';ctx.beginPath();ctx.arc(px+7,py+7,2,0,7);ctx.arc(px+T-7,py+T-7,2,0,7);ctx.fill()}
- }else{ // geometries of Weirdmageddon
-   rect(px,py,T,T,n>.45?'#d16f7824':'#402e4a2d');
-   if(n>.59){ctx.strokeStyle='#e2ac8c44';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(px+10,py+33);ctx.lineTo(px+21,py+11);ctx.lineTo(px+35,py+33);ctx.closePath();ctx.stroke()}
- }
+function nearestItem(){if(!player)return null;return clues.find(x=>!x.got&&Math.abs(player.x-x.x)<106)}
+function posItem(item){return {x:item.x-cam,y:ground-108}};
+function stunNearby(){
+ if(abilityCooldown>0){showToast('Способность заряжается…');return false;}
+ abilityCooldown=1.3;shotFX.push({x:player.x+player.face*42,y:player.y-73,age:0,type:player.person});
+ let near=false;
+ foes.forEach(f=>{if(Math.abs(f.x-player.x)<196){f.stun=3.7;near=true;spawn(f.x,ground-85,player.person==='dipper'?'#e7f6b2':'#ffb0d7',12)}});
+ note(player.person==='dipper'?660:790,.28,'triangle',.04);vibrate(10);
+ if(near)showToast(player.person==='mabel'?'Звезда оглушила врага!':'Луч ослепил врага!');
+ return true;
 }
-function sceneWall(w){
- const x=w.x,y=w.y; let k=rand(x/48+17*y/48);
- if(lv===1){
-   // Ancient evergreen canopy, drawn from layered triangular branches.
-   ctx.fillStyle='#102a25';ctx.beginPath();ctx.ellipse(x+24,y+43,25,11,0,0,7);ctx.fill();
-   ctx.fillStyle=k>.5?'#225342':'#194036';
-   ctx.beginPath();ctx.moveTo(x+23,y-13);ctx.lineTo(x-9,y+40);ctx.lineTo(x+58,y+40);ctx.closePath();ctx.fill();
-   ctx.fillStyle=k>.5?'#36735a':'#285745';
-   ctx.beginPath();ctx.moveTo(x+23,y-15);ctx.lineTo(x+1,y+23);ctx.lineTo(x+46,y+23);ctx.closePath();ctx.fill();
-   rect(x+20,y+31,8,19,'#3c3a2b');
- }else if(lv===0){
-   rect(x,y,T,T,'#654532');rect(x+3,y+2,T-6,T-4,'#8b5b3b');
-   ctx.strokeStyle='#d0a16d44';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+6,y+15);ctx.lineTo(x+42,y+15);ctx.moveTo(x+6,y+32);ctx.lineTo(x+42,y+32);ctx.stroke();
-   rect(x+6,y+6,4,4,'#e4c18568');rect(x+39,y+37,4,4,'#251b1a88');
- }else if(lv===2){
-   ctx.fillStyle=k>.55?'#466276':'#3b5866';ctx.beginPath();ctx.ellipse(x+24,y+27,31,26,k,0,7);ctx.fill();
-   ctx.fillStyle='#9dbeb251';ctx.beginPath();ctx.ellipse(x+17,y+17,11,5,k,0,7);ctx.fill();
-   ctx.strokeStyle='#94cbb56e';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+5,y+41);ctx.quadraticCurveTo(x+16,y+36,x+25,y+41);ctx.stroke();
- }else if(lv===3){
-   rect(x,y,T,T,'#2d3b4a');rect(x+2,y+2,T-4,T-4,k>.5?'#546472':'#4a5b68');
-   rect(x+4,y+5,T-8,5,'#bec8bc24');rect(x+6,y+38,T-12,5,'#101c2955');
-   rect(x+6,y+6,4,4,'#b8c9d570');rect(x+38,y+38,4,4,'#b8c9d570');
-   if(k>.83){rect(x+13,y+17,24,4,'#fbc17d88');rect(x+13,y+25,24,4,'#fbc17d88')}
- }else{
-   rect(x,y,T,T,'#2e2945');ctx.fillStyle=k>.6?'#d16875':'#6e4569';
-   ctx.beginPath();ctx.moveTo(x+T/2,y-7);ctx.lineTo(x+T+9,y+T);ctx.lineTo(x-9,y+T);ctx.closePath();ctx.fill();
-   ctx.strokeStyle='#eeae9490';ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(x+T/2,y+7);ctx.lineTo(x+T-8,y+T-5);ctx.lineTo(x+8,y+T-5);ctx.closePath();ctx.stroke();
+function interact(){
+ if(mode!=='playing')return;
+ // The locked archive requires both siblings. The two actions cannot be skipped by jumping.
+ const gateX=2570;
+ if(level===0&&!mansionLock.opened&&Math.abs(player.x-gateX)<175){
+  if(!mansionLock.scanned){
+   if(player.person!=='dipper'){showToast('Нужен Диппер: нажми портрет героя вверху');return;}
+   if(abilityCooldown>0){showToast('Фонарик ещё заряжается');return;}
+   mansionLock.scanned=true;abilityCooldown=.35;spawn(gateX,ground-150,'#9ee3ef',33);
+   showToast('Символ найден! Теперь переключись на Мэйбл ✦');note(720,.23);return;
+  }
+  if(player.person!=='mabel'){showToast('Мэйбл должна разбить печать звездой ✦');return;}
+  if(abilityCooldown>0){showToast('Звезда ещё заряжается');return;}
+  mansionLock.opened=true;spawn(gateX,ground-140,'#ffca76',44);note(920,.36,'triangle',.05);vibrate([20,35,20]);
+  showToast('Секретная дверь открыта!');return;
  }
+ const item=nearestItem();
+ if(item){
+  if(level===0&&item.id===0&&!item.revealed){
+   if(player.person!=='dipper'){showToast('Этот след увидит только фонарик Диппера');return;}
+   if(abilityCooldown>0){showToast('Фонарик заряжается…');return;}
+   item.revealed=true;abilityCooldown=.4;spawn(item.x,ground-115,'#bdeaff',28);
+   showToast('Невидимые чернила! Теперь открой обрывок.');note(660,.2);return;
+  }
+  if(level===0&&item.id===1){
+   const g=foes.find(f=>f.base===3900);
+   if(g&&g.stun<=0){
+    if(player.person!=='mabel'){showToast('Гном охраняет страницу. Переключись на Мэйбл!');return;}
+    stunNearby();return;
+   }
+  }
+  openPuzzle(item);return;
+ }
+ const L=LEVELS[level];
+ if(player.x>L.world-240&&clues.every(x=>x.got)){complete();return;}
+ stunNearby();
 }
-function draw(){let st=stories[lv],background=st.ground;rect(0,0,W,H,background);cam.x=Math.max(0,Math.min(WW*T-W,player.x-W*.35));cam.y=Math.max(0,Math.min(WH*T-H,player.y-H*.5));ctx.save();ctx.translate(-cam.x,-cam.y);
-const sx=Math.floor(cam.x/T)-1,ex=Math.ceil((cam.x+W)/T)+1,sy=Math.floor(cam.y/T)-1,ey=Math.ceil((cam.y+H)/T)+1;
-for(let y=Math.max(0,sy);y<Math.min(WH,ey);y++)for(let x=Math.max(0,sx);x<Math.min(WW,ex);x++)sceneFloor(x,y);
-for(let d of world.decor){if(d.x<cam.x-20||d.x>cam.x+W+20||d.y<cam.y-20||d.y>cam.y+H+20)continue;ctx.fillStyle=lv===1?'#2c796048':lv===2?'#b2e8ee39':'#d7bc7d24';ctx.beginPath();ctx.arc(d.x,d.y,2+d.k*5,0,7);ctx.fill()}
-for(let w of world.walls){if(w.x+w.w<cam.x||w.x>cam.x+W||w.y+w.h<cam.y||w.y>cam.y+H)continue;sceneWall(w)}
-for(let h of hazards){ctx.fillStyle='#61f0f05e';ctx.beginPath();ctx.ellipse(h.x,h.y,33+Math.sin(elapsed*3)*2,24,0,0,7);ctx.fill();ctx.strokeStyle='#b8fffdbb';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(h.x,h.y,22,14,0,0,7);ctx.stroke()}
-for(let i of items)if(!i.got){ctx.save();ctx.translate(i.x,i.y);ctx.shadowColor='#ffe79a';ctx.shadowBlur=21;ctx.font='30px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(st.collect,0,Math.sin(elapsed*3+i.x)*5);ctx.restore()}
-// Ancient rune, visible after illuminating.
-if(rune.revealed){ctx.save();ctx.translate(rune.x,rune.y);ctx.strokeStyle=rune.done?'#75f7bd':'#f3dc82';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,23,0,7);ctx.stroke();ctx.fillStyle=rune.done?'#75f7bd':'#f3dc82';ctx.font='bold 32px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(rune.done?'✓':'ᚠ',0,0);ctx.restore()}else{ctx.fillStyle='#111e2966';ctx.beginPath();ctx.arc(rune.x,rune.y,26,0,7);ctx.fill()}
-ctx.save();ctx.translate(switcher.x,switcher.y);ctx.fillStyle=switcher.done?'#71ffcc':'#f5a2d7';rr(-27,-26,54,52,10);ctx.fill();ctx.fillStyle='#53334e';star(0,0,20);ctx.fill();ctx.font='20px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText(switcher.done?'✓':'★',0,0);ctx.restore();
-ctx.save();ctx.translate(door.x,door.y);ctx.fillStyle=collected===3&&rune.done&&switcher.done?'#9ff2ad':'#714538';rr(-30,-40,60,80,8);ctx.fill();ctx.strokeStyle='#d4b277';ctx.lineWidth=4;ctx.stroke();ctx.fillStyle='#e9c97d';ctx.beginPath();ctx.arc(15,0,5,0,7);ctx.fill();ctx.fillStyle='#fff6d4';ctx.font='bold 15px Nunito, sans-serif';ctx.textAlign='center';ctx.fillText('ВЫХОД',0,-52);ctx.restore();
-for(let e of enemies){if(e.stun){ctx.strokeStyle='#ffff99';ctx.lineWidth=2;star(e.x,e.y-34,8);ctx.stroke()}if(st.enemy==='gnome')drawGnome(e.x,e.y,elapsed);else if(st.enemy==='ghost')drawGhost(e.x,e.y,elapsed);else drawBot(e.x,e.y,elapsed)}
-if(lv===4&&boss.active){drawBill(boss.x,boss.y,elapsed);ctx.fillStyle='#f7efcf';ctx.font='bold 12px Nunito';ctx.textAlign='center';ctx.fillText(boss.exposed>0?'УЯЗВИМ!':'БИЛЛ',boss.x,boss.y-78)}
-if(flash>0){let grad=ctx.createRadialGradient(player.x,player.y,12,player.x,player.y,205);grad.addColorStop(0,'#fff1aa88');grad.addColorStop(1,'#ffe89000');ctx.fillStyle=grad;ctx.beginPath();ctx.arc(player.x,player.y,205,0,7);ctx.fill()}
-for(let s of stars){ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.angle);ctx.shadowColor='#ff91de';ctx.shadowBlur=24;ctx.fillStyle='#ff9bcb';star(0,0,17);ctx.fill();ctx.restore()}
-for(let p of particles){ctx.globalAlpha=Math.min(1,p.t*2);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,4,0,7);ctx.fill();ctx.globalAlpha=1}
-if(invulnerable===0||Math.floor(elapsed*12)%2===0)drawHero(player.x,player.y,hero===1,elapsed);
-// Nearby controls / interact hint.
-let nearby=[...items.filter(i=>!i.got),rune,switcher,door].find(i=>dist(player,i)<72);if(nearby){ctx.save();ctx.font='bold 15px Nunito';ctx.textAlign='center';ctx.fillStyle='#fff6cf';ctx.fillText('E',nearby.x,nearby.y-43);ctx.restore()}
-ctx.restore();
-// navigation hint arrow for distant door, and mini compass.
-ctx.fillStyle='#111d2bd9';rr(12,12,236,54,10);ctx.fill();ctx.fillStyle='#ffe9b2';ctx.font='900 17px Nunito';ctx.fillText(st.title,24,34);ctx.fillStyle='#afc8cf';ctx.font='700 12px Nunito';ctx.fillText(hero?'Мэйбл · ★ звезда':'Диппер · 🔦 свет',24,53);
-const targets=[...items.filter(i=>!i.got),...(!rune.done?[rune]:[]),...(!switcher.done?[switcher]:[]),door];let nearest=targets.sort((a,b)=>dist(a,player)-dist(b,player))[0];if(nearest){let ang=Math.atan2(nearest.y-player.y,nearest.x-player.x);ctx.save();ctx.translate(W-42,43);ctx.rotate(ang);ctx.fillStyle='#ffde87';ctx.beginPath();ctx.moveTo(20,0);ctx.lineTo(-10,-12);ctx.lineTo(-5,0);ctx.lineTo(-10,12);ctx.closePath();ctx.fill();ctx.restore()}
-if(abilityCooldown>0){ctx.fillStyle='#0008';rr(W-146,H-35,130,19,6);ctx.fill();ctx.fillStyle='#fcb7d7';rr(W-143,H-32,124*(1-Math.min(1,abilityCooldown/(hero===0?1.1:.58))),13,4);ctx.fill()}
-if(toastTimer>0){ctx.fillStyle='#0f2635ed';rr(W/2-285,H-72,570,45,12);ctx.fill();ctx.fillStyle='#fff4d5';ctx.font='bold 16px Nunito';ctx.textAlign='center';ctx.fillText(toast,W/2,H-44,548);ctx.textAlign='left'}
+
+function jump(){if(mode!=='playing')return;if(player.onGround){player.vy=-520;player.onGround=false;note(330,.12,'triangle');vibrate(8);}}
+function hurt(){if(now-lastHit<1.7)return;lastHit=now;life--;player.vy=-220;player.x=Math.max(35,player.x-player.face*90);player.onGround=false;note(140,.26,'sawtooth',.055);vibrate([60,60,50]);spawn(player.x,player.y-55,'#ff9f7f',16);updateHUD();if(life<=0){mode='failed';$('#endHead').textContent='ОЙ, НЕТ...';$('#endTitle').textContent='Дневник потерян';$('#endDescription').textContent='Но загадки Гравити Фолз не исчезают так просто. Попробуй ещё раз!';$('#endButton').textContent='Повторить уровень';showScreen('end');releaseJoy();}}
+function complete(){mode='dialog';const L=LEVELS[level];note(520,.17);setTimeout(()=>note(660,.17),170);setTimeout(()=>note(850,.28),340);if(level===4){story('ЭПИЛОГ','Город спасён',L.outro+'\n\nНо утром в Хижине чудес появилось новое письмо: «Спасибо, что сыграли. — Б.»','В главное меню →',()=>{mode='menu';showScreen('menu');$('#startButton').textContent='Начать приключение →';$('#newGameButton').style.display='none';try{localStorage.setItem(saveKey,'0')}catch(e){}},'mabel');}else{story(`ДЕЛО № 0${level+1} ЗАКРЫТО`,'Улика найдена',L.outro,'Следующая глава →',()=>setupLevel(level+1),'mabel');}}
+function pause(){if(mode!=='playing')return;mode='pause';showScreen('pause');releaseJoy();}
+$('#startButton').addEventListener('click',start);$('#newGameButton').addEventListener('click',()=>{try{localStorage.setItem(saveKey,'0')}catch(e){};setupLevel(0)});$('#pauseButton').addEventListener('click',pause);$('#resumeButton').addEventListener('click',resume);$('#retryButton').addEventListener('click',()=>setupLevel(level));$('#homeButton').addEventListener('click',()=>{mode='menu';showScreen('menu');updateStartButton()});$('#endButton').addEventListener('click',()=>setupLevel(level));$('#audioButton').addEventListener('click',()=>{audioOn=!audioOn;$('#audioButton').textContent='Звук: '+(audioOn?'вкл':'выкл');if(audioOn)note(720,.1);});$('#characterButton').addEventListener('click',()=>{if(mode!=='playing')return;player.person=player.person==='dipper'?'mabel':'dipper';$('#charImage').src=img[player.person].src;vibrate(8);showToast(player.person==='dipper'?'Диппер: луч света':'Мэйбл: звёздная магия');updateHUD();});
+function releaseJoy(){joyX=0;touchStickId=null;autoTarget=null;ui.knob.style.transform='translate(0px,0px)';ui.jump.classList.remove('active');}
+function stickMove(e){const r=ui.stick.getBoundingClientRect();const dx=clamp((e.clientX-(r.left+r.width/2))/(r.width*.34),-1,1);joyX=Math.abs(dx)<.15?0:dx;ui.knob.style.transform=`translate(${dx*32}px,0px)`;if(Math.abs(joyX)>.16)autoTarget=null;}
+ui.stick.addEventListener('pointerdown',e=>{if(mode!=='playing')return;e.preventDefault();touchStickId=e.pointerId;ui.stick.setPointerCapture(e.pointerId);stickMove(e);});ui.stick.addEventListener('pointermove',e=>{if(touchStickId!==e.pointerId)return;e.preventDefault();stickMove(e)});for(const t of ['pointerup','pointercancel','lostpointercapture'])ui.stick.addEventListener(t,e=>{if(touchStickId===e.pointerId){touchStickId=null;joyX=0;ui.knob.style.transform='translate(0px,0px)'}});
+ui.jump.addEventListener('pointerdown',e=>{e.preventDefault();jump();ui.jump.classList.add('active');});for(const t of ['pointerup','pointercancel','pointerleave'])ui.jump.addEventListener(t,()=>ui.jump.classList.remove('active'));
+ui.use.addEventListener('pointerdown',e=>{e.preventDefault();interact();});
+canvas.addEventListener('pointerdown',e=>{if(mode!=='playing')return;if(e.clientY>h-178)return;const target=clues.find(x=>!x.got&&Math.abs(x.x-(e.clientX+cam))<63);if(target){autoTarget=target.x;showToast('Идём к улике…');return;}const exit=LEVELS[level].world-145;if(Math.abs(exit-(e.clientX+cam))<90){autoTarget=exit;return;}autoTarget=clamp(e.clientX+cam,20,LEVELS[level].world-160);});
+function spawn(x,y,color,n){for(let i=0;i<n;i++){const a=(Math.PI*2*i/n)+rnd(i+now)*.6,sp=40+rnd(i*15+now)*110;particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-55,age:0,life:.8+rnd(i+44)*.8,size:2+rnd(i*3)*4,c:color})}}
+function update(delta){if(mode!=='playing')return;const L=LEVELS[level];abilityCooldown=Math.max(0,abilityCooldown-delta);hintCooldown=Math.max(0,hintCooldown-delta);let movement=joyX;if(Math.abs(movement)<.08&&autoTarget!=null){let diff=autoTarget-player.x;if(Math.abs(diff)<25){autoTarget=null;movement=0;let pick=nearestItem();if(pick)interact();else if(player.x>L.world-230&&clues.every(x=>x.got))interact();}else movement=clamp(diff/80,-1,1)}
+let wantedX=clamp(player.x+movement*worldSpeed*delta,24,L.world-110);
+ if(level===0&&!mansionLock.opened&&player.x<=2570&&wantedX>2519){
+  wantedX=2519;autoTarget=null;
+  if(hintCooldown<=0){showToast('Дверь с двумя печатями: используй фонарик Диппера');hintCooldown=4.2;}
+ }
+ player.x=wantedX;if(Math.abs(movement)>.1){player.face=movement>0?1:-1;player.walk+=delta*13;}else player.walk=0;
+player.vy+=1060*delta;player.y+=player.vy*delta;if(player.y>=ground){player.y=ground;player.vy=0;player.onGround=true;}
+foes.forEach((f,i)=>{f.t+=delta;if(f.stun>0){f.stun-=delta;return;}f.x=f.base+Math.sin(f.t*.82+i*.7)*75;if(Math.abs(f.x-player.x)<40&&Math.abs(player.y-ground)<45)hurt()});hazards.forEach(o=>{if(Math.abs(o.x-player.x)<35&&Math.abs(player.y-ground)<45)hurt()});
+cam=clamp(player.x-w*.35,0,L.world-w);for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.age+=delta;p.x+=p.vx*delta;p.y+=p.vy*delta;p.vy+=140*delta;if(p.age>p.life)particles.splice(i,1)}for(let i=shotFX.length-1;i>=0;i--){shotFX[i].age+=delta;if(shotFX[i].age>.55)shotFX.splice(i,1)}
+ui.progressFill.style.width=(100*player.x/L.world)+'%';updateHUDFast();}
+let lastAction=false;
+function updateHUDFast(){
+ const count=clues.filter(x=>x.got).length;ui.count.textContent=count+'/3';let near=nearestItem();
+ if(level===0&&!mansionLock.opened&&Math.abs(player.x-2570)<176){
+  ui.useName.textContent=!mansionLock.scanned?'СКАН': 'ПЕЧАТЬ';return;
+ }
+ if(near&&level===0&&near.id===0&&!near.revealed){ui.useName.textContent='СВЕТ';return;}
+ if(near&&level===0&&near.id===1&&foes.find(f=>f.base===3900)?.stun<=0){ui.useName.textContent='ЗВЕЗДА';return;}
+ ui.useName.textContent=near?'ВЗЯТЬ':player.x>LEVELS[level].world-240&&count===3?'ОТКРЫТЬ':player.person==='mabel'?'ЗВЕЗДА':'СВЕТ';
 }
-let accumulator=0;function loop(t){let dt=Math.min(.05,(t-last)/1000||.016);last=t;update(dt);draw();requestAnimationFrame(loop)}
-const keymap={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
-document.addEventListener('keydown',e=>{if(keymap[e.code]){input[keymap[e.code]]=true;e.preventDefault()}if(['Space','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();if(e.repeat)return;if(e.code==='Space')ability();if(e.code==='Tab'||e.code==='KeyQ')switchHero();if(e.code==='KeyE'||e.code==='Enter')interact();if(e.code==='KeyP'||e.code==='Escape')pause()});document.addEventListener('keyup',e=>{if(keymap[e.code])input[keymap[e.code]]=false});window.addEventListener('blur',()=>{for(let k in input)input[k]=false});
-for(let btn of document.querySelectorAll('[data-key]')){let type=btn.dataset.key;function down(e){e.preventDefault();btn.classList.add('active');btn.setPointerCapture?.(e.pointerId);if(type in input)input[type]=true;else if(type==='switch')switchHero();else if(type==='ability')ability();else if(type==='interact')interact();else if(type==='pause')pause()}function up(e){e.preventDefault();btn.classList.remove('active');if(type in input)input[type]=false}btn.addEventListener('pointerdown',down);btn.addEventListener('pointerup',up);btn.addEventListener('pointercancel',up)}
-// Start screen is an actual first scene, behind the opening story card.
-resizeGame();initLevel(0);state='intro';requestAnimationFrame(loop);
+// Painter helpers (background is procedural but inspired by painted animation backgrounds).
+function gradient(x,y,x2,y2,stops){let g=ctx.createLinearGradient(x,y,x2,y2);stops.forEach((s,i)=>g.addColorStop(i/(stops.length-1),s));return g}
+function rect(x,y,a,b,c){ctx.fillStyle=c;ctx.fillRect(x,y,a,b)}
+function poly(points,fill,stroke=null,lw=1){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}}
+function ellipse(x,y,rx,ry,fill){ctx.beginPath();ctx.ellipse(x,y,Math.max(1,rx),Math.max(1,ry),0,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill()}
+function line(points,color,lw=1){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke()}
+function rounded(x,y,a,b,r,fill,stroke=null){ctx.beginPath();ctx.roundRect(x,y,a,b,r);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}}
+function pine(x,y,s,color,outline='#142e2d'){if(x<-s*1.3||x>w+s*1.3)return;ctx.save();ctx.translate(x,y);rect(-s*.09,-s*.16,s*.18,s*.9,'#43362d');for(let i=0;i<3;i++){let ty=-s*(1.5-i*.32),wide=s*(.42+i*.10);poly([[0,ty],[-wide,ty+s*.65],[wide,ty+s*.65]],color,outline,1.4)}line([[-s*.24,-s*.73],[s*.11,-s*.79]],'#ffffff13',2);ctx.restore()}
+function fir(x,y,s,flip=1){if(x<-s*1.1||x>w+s*1.1)return;ctx.save();ctx.translate(x,y);ctx.scale(flip,1);poly([[-s*.1,0],[-s*.11,-s*2.25],[s*.03,-s*2.25],[s*.09,0]],'#5c4332','#243431',2);for(let i=0;i<4;i++){let yi=-s*(2.38-i*.37),wid=s*(.32+i*.13);poly([[0,yi],[-wid,yi+s*.73],[wid,yi+s*.73]],['#1b4648','#28544b','#2e5a4c','#305b49'][i],'#1d3a3b',2)}line([[s*.03,-s*1.9],[s*.22,-s*1.55]],'#65847755',2);ctx.restore()}
+function hills(scroll,tint){ctx.save();ctx.translate(-((scroll*.12)%650),0);for(let i=-1;i<4;i++){let xx=i*650;poly([[xx,ground+1],[xx,ground-110],[xx+90,ground-192],[xx+180,ground-132],[xx+330,ground-233],[xx+455,ground-145],[xx+650,ground-95],[xx+650,ground+1]],tint)}ctx.restore()}
+function fireflies(layer){for(let i=0;i<22;i++){let x=(rnd(i*22+layer)*w+Math.sin(now*.5+i*3)*18),y=ground*(.2+rnd(i*3+layer)*.68);let a=.25+.6*(.5+.5*Math.sin(now*1.3+i*3));ctx.globalAlpha=a;ellipse(x,y,1.6+rnd(i*4)*1.5,2.2,'#ffe4a0');}ctx.globalAlpha=1}
+function timberBackground(){rect(0,0,w,h,gradient(0,0,0,h,['#283f48','#66513f','#382e28']));for(let i=0;i<Math.ceil(w/82)+2;i++){let x=i*82-((cam*.16)%82);rect(x,0,3,ground,'#1b2f32ad');rect(x+4,0,1,ground,'#d9ae7350');for(let j=0;j<7;j++)line([[x+10,58+j*72],[x+65,68+j*72]],'#e4bd8050',1)}
+// distant window with moon / view
+let sx=w*.52-cam*.03;rounded(sx-83,ground-275,166,168,8,'#3a2c29','#957355');rounded(sx-73,ground-265,146,147,3,gradient(0,ground-270,0,ground-114,['#143b4f','#e7a66e']),'#d8bd8c');poly([[sx-72,ground-133],[sx-38,ground-180],[sx,ground-152],[sx+46,ground-200],[sx+72,ground-152],[sx+72,ground-118],[sx-72,ground-118]],'#1e4741');ellipse(sx+34,ground-226,19,19,'#fff0ae');rect(sx-2,ground-265,5,146,'#473329');rect(sx-74,ground-194,148,6,'#473329');
+// Cabinet oddities in frames high on the wall.
+for(let i=-1;i<Math.ceil(w/245)+2;i++){let x=i*245-((cam*.18)%245)+72;let y=ground-390+(i%2)*24;rounded(x-46,y-61,92,116,4,'#482f28','#b78959');rounded(x-37,y-50,74,96,2,'#d9bd8b','#3e3332');if(i%2===0){ellipse(x,y-9,26,29,'#385b55');poly([[x,y-39],[x+25,y+8],[x-25,y+8]],'#ecc16e','#53432e',2);ellipse(x,y-4,7,7,'#fff6d4');ellipse(x,y-4,2,4,'#1d2c2d');}else{ctx.font='bold 24px Georgia';ctx.textAlign='center';ctx.fillStyle='#6f4732';ctx.fillText('Ⅲ',x,y-4);line([[x-21,y+8],[x+21,y+8]],'#957a55',3);line([[x-17,y+19],[x+17,y+19]],'#957a55',3)}}
+rect(0,ground-30,w,h-ground+30,'#3d2c26');for(let i=0;i<18;i++){let x=i*42-((cam*.28)%42);line([[x,ground-28],[x+20,h]],'#c3935e44',2)}
+for(let i=0;i<5;i++){let x=(i*250-cam*.25)%(w+420)-150;rounded(x,ground-134,100,18,5,'#35241e','#1b1b16');rect(x+5,ground-112,9,80,'#6b4d34');rect(x+85,ground-112,9,80,'#6b4d34');rounded(x+11,ground-177,64,44,4,'#73563e','#32291f');line([[x+25,ground-157],[x+62,ground-157]],'#d1aa725a',3)}
+rect(0,ground-9,w,10,'#bd9061');}
+function forestBackground(){rect(0,0,w,h,gradient(0,0,0,ground,['#173744','#4c665d','#829477']));ellipse(w*.8,ground*.19,57,57,'#d4dcba44');hills(cam,'#2f4c4e');for(let i=-2;i<20;i++){let xx=i*115-(cam*.32%115),ss=105+rnd(i+32)*60;pine(xx,ground+20,ss,'#244b4b','#183738')}for(let i=-2;i<12;i++){let xx=i*180-(cam*.6%180);fir(xx,ground+35,88+rnd(i+14)*28,i%2?-1:1)}fireflies(1)}
+function lakeBackground(){rect(0,0,w,h,gradient(0,0,0,ground,['#25334c','#876c88','#747c95']));ellipse(w*.8,ground*.23,35,35,'#fff6cd');hills(cam,'#4d5a6c');rect(0,ground-88,w,88,'#44677d');for(let i=0;i<22;i++){let y=ground-80+i*4;line([[0,y],[w,y+Math.sin(now+i)*1.6]],i%3?'#c1c6b21f':'#dde1d459',1)}for(let i=-1;i<9;i++){let xx=i*190-(cam*.5%190);pine(xx,ground-70,73,'#314850');}for(let i=-1;i<5;i++){let xx=i*260-(cam*.72%260);rect(xx,ground-29,145,17,'#57423e');for(let j=0;j<4;j++)rect(xx+j*40,ground-30,3,17,'#bfa77a5e')}fireflies(2)}
+function bunkerBackground(){rect(0,0,w,h,gradient(0,0,0,ground,['#172d3c','#304752','#25313c']));for(let i=-1;i<7;i++){let xx=i*124-(cam*.3%124);rect(xx,0,8,ground,'#49606a');rect(xx+5,0,2,ground,'#88a2a135');rect(xx,100,124,11,'#2c3d44');rect(xx,ground-235,124,13,'#273c44');rounded(xx+29,ground-192,62,103,9,'#142b37','#4a7078');ellipse(xx+60,ground-139,16,24,'#d2ba8160');rect(xx+38,ground-202,42,9,'#b38b5d');rect(xx+19,ground-260,10,55,'#7e6e51');}rect(0,ground-24,w,18,'#5b6970');for(let i=0;i<30;i++)rect(i*30-(cam%30),ground-20,15,4,'#9b99924a');}
+function riftBackground(){rect(0,0,w,h,gradient(0,0,0,ground,['#261c45','#82466a','#eaa26f']));ctx.save();ctx.translate(w*.53,ground*.41);ctx.rotate(now*.02);for(let i=8;i>=0;i--){ctx.beginPath();ctx.arc(0,0,37+i*37,0,Math.PI*2);ctx.strokeStyle=i%2?'#f9b77719':'#371c6c22';ctx.lineWidth=27;ctx.stroke()}for(let i=0;i<9;i++){let ang=i*Math.PI*2/9+now*.04;line([[Math.cos(ang)*105,Math.sin(ang)*105],[Math.cos(ang)*430,Math.sin(ang)*430]],'#ffd17b0d',17)}ctx.restore();for(let i=-2;i<15;i++){let x=i*165-(cam*.5%165),v=rnd(i+4);poly([[x,ground],[x+60,ground-130-v*140],[x+132,ground]],'#3d2748','#281d3f',2);}fireflies(3)}
+function drawGround(){const L=LEVELS[level];if(level===0){timberBackground();return;}if(level===1)forestBackground();if(level===2)lakeBackground();if(level===3)bunkerBackground();if(level===4)riftBackground();rect(0,ground,w,h-ground,L.floor);rect(0,ground,w,8,level===4?'#c88271':level===3?'#71898c':level===2?'#96a7b1':'#86a77f');
+for(let i=-2;i<Math.ceil(w/48)+3;i++){let wx=Math.floor(cam/48)*48+i*48,xx=wx-cam,rv=rnd(wx*.01);if(level===1){line([[xx,ground+12],[xx+4,ground+7],[xx+6,ground+12]],'#8dab80',2);ellipse(xx+16,ground+28,4,2,'#718064');}if(level===2){ellipse(xx+20,ground+22,14*rv+3,4,'#899aa66a');}if(level===3){rect(xx,ground+14,23,3,'#8c9f9f52');ellipse(xx+8,ground+36,2,2,'#c4bb9a')}if(level===4){poly([[xx,ground+20],[xx+15,ground+24],[xx+19,ground+45]],'#a47c7855')}}}
+function drawnProp(wx,i){let x=wx-cam;if(x<-120||x>w+120)return;const y=ground,rz=rnd(i+level*500),s=.8+rz*.6;if(level===0){ctx.save();ctx.translate(x,y);rect(-23,-91,45,86,'#6b4a38');rect(-26,-95,52,9,'#b88a5c');rect(-20,-67,40,5,'#4c3227');ellipse(0,-114,14,22,'#b58452');ctx.restore()}
+else if(level===1){if(i%3===0){rect(x-4,y-33,8,28,'#695239');ellipse(x,y-43,17,10,'#f46d5d');ellipse(x-7,y-46,2,2,'#fff2ce');ellipse(x+7,y-40,2,2,'#fff2ce')}else{ellipse(x,y-9,24*s,11,'#38523d');line([[x-9,y-7],[x-3,y-19],[x+4,y-9]],'#92b682',2)}}else if(level===2){ellipse(x,y+1,20*s,9,'#6d8491');ellipse(x-2,y-2,11*s,4,'#a2a6a9')}else if(level===3){rect(x-18,y-21,38,17,'#42505a');rect(x-20,y-24,40,5,'#e0b15b');rect(x-10,y-18,21,4,'#748f95')}else{poly([[x-13,y],[x,y-51*s],[x+14,y]],'#d5a47f','#462c41',2)}}
+function drawProps(){const step=level===0?260:185;let from=Math.floor(cam/step)-1;for(let i=from;i<from+Math.ceil(w/step)+3;i++){if(i<0)continue;drawnProp(i*step+100,i)}}
+function drawnJournal(wx,y,idx){let x=wx-cam;if(x<-100||x>w+100)return;const L=LEVELS[level];const yy=y+Math.sin(now*3.3+idx*2)*6;ctx.save();ctx.translate(x,yy);ctx.shadowColor=L.color;ctx.shadowBlur=30;ellipse(0,0,27,27,L.color+'55');ctx.shadowBlur=0;ctx.rotate(Math.sin(now*2+idx)*.11);rounded(-18,-23,36,45,4,level===3?'#b6ad91':'#f2dfab','#5a3928');rect(-13,-17,26,3,'#846347');rect(-13,-8,20,2,'#917a55');rect(-13,-2,24,2,'#917a55');rect(-13,5,17,2,'#917a55');poly([[0,12],[3,18],[9,18],[5,22],[6,27],[0,24],[-6,27],[-5,22],[-9,18],[-3,18]],'#c66146');ctx.restore()}
+function drawnGnome(x,y,i){ctx.save();ctx.translate(x,y);let bob=Math.sin(now*5+i)*3;ctx.translate(0,bob);poly([[-25,-31],[0,-93],[25,-31]],'#c95c42','#4d3328',3);ellipse(0,-33,22,19,'#eabf97');ellipse(-11,-36,5,6,'#fff9df');ellipse(12,-36,5,6,'#fff9df');ellipse(-10,-36,2,3,'#332724');ellipse(12,-36,2,3,'#332724');ellipse(0,-23,15,16,'#f2ece0');ellipse(0,-9,18,13,'#4a6a4b');rect(-17,-5,12,9,'#332d31');rect(6,-5,12,9,'#332d31');ctx.restore()}
+function drawEnemy(f,i){let x=f.x-cam;if(x<-100||x>w+100)return;ctx.save();if(f.stun>0)ctx.globalAlpha=.7;const y=ground;if(level<=1){drawnGnome(x,y,i)}else if(level===2){ellipse(x,y-62,26,37,'#cadbf0b8');ellipse(x-7,y-68,4,7,'#213748');ellipse(x+8,y-68,4,7,'#213748');ellipse(x,y-48,12,3,'#486477');for(let k=0;k<3;k++)line([[x-19+k*18,y-35],[x-20+k*20,y-21+Math.sin(now*4+k)*9]],'#e2e8eb9e',5)}else if(level===3){rounded(x-27,y-95,54,61,14,'#6f8792','#263b46');rounded(x-22,y-89,44,38,10,'#2d4857','#a0a8a0');ellipse(x,y-72,12,10,'#f5c16d');rect(x-16,y-31,10,31,'#5a6a6f');rect(x+8,y-31,10,31,'#5a6a6f');rect(x-34,y-75,10,9,'#b3a176');rect(x+25,y-75,10,9,'#b3a176')}else{ellipse(x,y-60,28,32,'#fff2c2');ellipse(x,y-60,13,22,'#bd6d78');ellipse(x,y-60,5,15,'#2c202d');for(let a=0;a<8;a++){let ang=a*Math.PI/4;line([[x+Math.cos(ang)*25,y-60+Math.sin(ang)*27],[x+Math.cos(ang)*40,y-60+Math.sin(ang)*45]],'#eed89a',3)}}if(f.stun>0){ctx.font='900 23px Georgia';ctx.fillStyle='#fce996';ctx.fillText('✧',x-8,y-108)}ctx.restore();}
+function drawTrap(a){let x=a.x-cam;if(x<-70||x>w+70)return;ctx.save();ctx.translate(x,ground);if(level===0||level===1){for(let k=-2;k<3;k++)poly([[k*16-6,0],[k*16+1,-24],[k*16+8,0]],level===1?'#c98e4f':'#a67e70','#553c39',1.5)}else if(level===2){for(let k=-2;k<3;k++)poly([[k*16,0],[k*16-6,-10],[k*16,-18],[k*16+6,-10]],'#b1dcf5','#6384a0',1)}else if(level===3){rounded(-41,-15,82,15,5,'#c2855d','#4e5557');for(let k=0;k<6;k++){const xx=-32+k*12;line([[xx,0],[xx, -12-(k%2)*6]],'#f0d078',4)}}else{for(let k=-2;k<3;k++)poly([[k*15-4,0],[k*15+2,-24],[k*15+7,0]],'#f2ab8f','#653948',1)}ctx.restore()}
+function drawHiddenClue(wx){
+ const x=wx-cam;if(x<-100||x>w+100)return;
+ ctx.save();ctx.translate(x,ground);
+ rounded(-43,-79,84,73,6,'#644936','#bb9461');rect(-31,-67,62,7,'#342723');rect(-31,-48,62,6,'#3c2b26');
+ ctx.globalAlpha=.6;ctx.font='bold 21px Georgia';ctx.textAlign='center';ctx.fillStyle='#ba9f71';ctx.fillText('?',0,-27);
+ ctx.restore();
+}
+function drawArchiveGate(){
+ const x=2570-cam;if(x<-160||x>w+160)return;
+ ctx.save();ctx.translate(x,ground);
+ const open=mansionLock.opened;
+ ctx.globalAlpha=open?.38:1;
+ ctx.shadowColor=open?'#9be6a2':'#d0a968';ctx.shadowBlur=open?34:12;
+ rounded(-43,-250,86,248,12,'#49392f','#caac76');
+ rounded(-30,-230,60,207,6,open?'#274a42':'#1e3136','#bd9868');
+ ctx.shadowBlur=0;
+ for(let i=0;i<6;i++)line([[-24,-211+i*30],[24,-211+i*30]],'#b08d5c',2);
+ ctx.textAlign='center';ctx.font='bold 31px Georgia';ctx.fillStyle=mansionLock.scanned?'#bdf4ec':'#c79853';ctx.fillText('◈',0,-155);
+ ctx.fillStyle=open?'#91e5ae':'#f9b4ce';ctx.fillText('✦',0,-101);
+ ctx.restore();
+ if(!open){const xx=clamp(x-116,9,w-235);rounded(xx,ground-296,232,34,10,'#14232be8','#e4bd7a');ctx.textAlign='center';ctx.font='bold 12px Trebuchet MS';ctx.fillStyle='#f4e5b8';ctx.fillText(mansionLock.scanned?'2. ЗВЕЗДА МЭЙБЛ':'1. ФОНАРИК ДИППЕРА',xx+116,ground-274);}
+}
+function drawExit(){const L=LEVELS[level],xx=L.world-140-cam;if(xx<-150||xx>w+200)return;const ok=clues.every(a=>a.got);ctx.save();ctx.translate(xx,ground);ctx.shadowColor=ok?L.color:'#385365';ctx.shadowBlur=ok?39:13;rounded(-38,-178,76,172,13,ok?'#6b5945':'#2e4850','#dfbd83');ctx.shadowBlur=0;rounded(-25,-160,50,142,9,ok?'#264c52':'#1b343c','#c39c6b');ctx.save();ctx.translate(0,-96);ctx.rotate(now*.3);poly([[0,-24],[-20,5],[0,28],[20,5]],ok?L.color:'#576b70');ctx.restore();ctx.font='bold 12px Georgia';ctx.textAlign='center';ctx.fillStyle='#e9d7a8';ctx.fillText(ok?'ВЫХОД':'3 УЛИКИ',0,-188);ctx.restore()}
+function drawBill(){if(level!==4)return;const x=LEVELS[4].world-370-cam;if(x<-220||x>w+220)return;if(!img.bill.complete)return;const y=ground-145+Math.sin(now*2)*12;ctx.save();ctx.shadowBlur=28;ctx.shadowColor='#ffd875';ctx.drawImage(img.bill,x-82,y-135,164,217);ctx.restore()}
+function drawCharacter(){if(!player)return;const x=player.x-cam,shadowY=ground+3;ctx.save();ctx.globalAlpha=.32;ellipse(x,shadowY,32,7,'#081217');ctx.restore();const sprite=img[player.person];if(!sprite.complete)return;const bob=player.onGround&&Math.abs(joyX)>.1?Math.sin(player.walk)*2:0;ctx.save();ctx.translate(x,player.y+bob);if(player.face===-1)ctx.scale(-1,1);if(now-lastHit<1.7&&Math.floor(now*12)%2===0)ctx.globalAlpha=.3;const height=h<700?105:130,width=height*.65;ctx.drawImage(sprite,-width*.5,-height,width,height);ctx.restore()}
+function drawFx(){for(let p of particles){ctx.globalAlpha=Math.max(0,1-p.age/p.life);ellipse(p.x-cam,p.y,p.size,p.size,p.c)}ctx.globalAlpha=1;for(let fx of shotFX){let x=fx.x-cam,y=fx.y,t=fx.age/.55;ctx.save();ctx.globalAlpha=Math.max(0,1-t);ctx.strokeStyle=fx.type==='mabel'?'#ffbad3':'#e6f6bc';ctx.lineWidth=9*(1-t)+1;ctx.beginPath();ctx.arc(x,y,5+t*170,0,2*Math.PI);ctx.stroke();ctx.restore()}}
+function drawGame(){drawGround();drawProps();hazards.forEach(drawTrap);foes.forEach(drawEnemy);clues.forEach((c,i)=>{if(!c.got){if(level===0&&i===0&&!c.revealed)drawHiddenClue(c.x);else drawnJournal(c.x,ground-104,i)}});if(level===0)drawArchiveGate();drawExit();drawBill();drawCharacter();drawFx();if(level===4){for(let i=0;i<7;i++){let x=(i*240-cam*.3)% (w+250);poly([[x,ground-280],[x+21,ground-300],[x+46,ground-279],[x+27,ground-264]],'#e9bd8255')}}
+// context prompt anchored just above the avatar
+const xx=player.x-cam,near=nearestItem();if(near||player.x>LEVELS[level].world-240){let text=near?(level===0&&near.id===0&&!near.revealed?'ПОСВЕТИ ФОНАРИКОМ':level===0&&near.id===1&&foes.find(f=>f.base===3900)?.stun<=0?'ОГЛУШИ ГНОМА ЗВЕЗДОЙ':'КОСНИСЬ «ВЗЯТЬ»'):clues.every(c=>c.got)?'ОТКРОЙ ВОРОТА':'СОБЕРИ 3 УЛИКИ';rounded(clamp(xx-73,5,w-154),player.y-178,148,28,8,'#121e23da','#a6ac9f');ctx.textAlign='center';ctx.font='bold 11px Trebuchet MS';ctx.fillStyle='#fff0ca';ctx.fillText(text,clamp(xx,79,w-79),player.y-160)}
+}
+function drawMenuBackground(){// independent, illustrated hero scene; no game UI visible
+rect(0,0,w,h,gradient(0,0,0,h,['#122d3f','#415b59','#222f32','#101a23']));const moonX=w*.8;ellipse(moonX,h*.2,44,44,'#fde9a0');ellipse(moonX,h*.2,68,68,'#efc78d15');for(let i=0;i<40;i++){let xx=rnd(i+100)*w,yy=rnd(i+120)*h*.53;ellipse(xx,yy,1+rnd(i)*1.2,1,'#ffe2ac8c')}
+hills(cam*.05,'#294744');const old=ground;ground=h*.83;for(let i=-2;i<8;i++)pine(i*110-(now*2%110),ground+15,125+rnd(i+5)*65,'#173b3b','#0f2e31');
+const houseX=w*.48,houseY=h*.66;rect(houseX-105,houseY-66,210,147,'#73513c');for(let i=0;i<8;i++)line([[houseX-104,houseY-58+i*17],[houseX+105,houseY-58+i*17]],'#b88b5f77',2);poly([[houseX-128,houseY-66],[houseX,houseY-157],[houseX+125,houseY-66]],'#4c3931','#2c2b2a',6);poly([[houseX-103,houseY-67],[houseX,houseY-141],[houseX+100,houseY-67]],'#6b4b3a');rect(houseX-52,houseY-118,98,20,'#c5a072');rect(houseX-48,houseY-114,91,11,'#624532');ctx.textAlign='center';ctx.font='900 10px Georgia';ctx.fillStyle='#ffecbb';ctx.fillText('MYSTERY SHACK',houseX-2,houseY-104);rounded(houseX-22,houseY+10,48,70,3,'#383332','#c49863');rounded(houseX-84,houseY-35,46,42,3,'#f6d18a','#473d37');rounded(houseX+44,houseY-35,46,42,3,'#f6d18a','#473d37');rect(houseX-64,houseY-35,4,42,'#564637');rect(houseX+65,houseY-35,4,42,'#564637');ellipse(houseX-32,houseY+2,17,13,'#e4ae6140');
+poly([[0,ground],[w,ground],[w,h],[0,h]],'#18282b');for(let i=0;i<14;i++){let x=i*36;line([[x,ground],[x-17,h]],'#62827438',1)}ground=old;fireflies(1);}
+let lastTs=0;function frame(ts){now=ts/1000;dt=Math.min(.04,(ts-lastTs)/1000||0);lastTs=ts;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);if(mode==='menu')drawMenuBackground();else{if(player){if(mode==='playing')update(dt);drawGame()}else drawMenuBackground();}requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+// Main menu hero uses local data SVG, so GitHub Pages doesn't need external assets.
+$('#menuDipper').src=img.dipper.src;$('#menuMabel').src=img.mabel.src;$('#charImage').src=img.dipper.src;updateStartButton();showScreen('menu');
+})();
 
 </script></body></html>
